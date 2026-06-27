@@ -107,6 +107,62 @@
   .footer{margin-top:26px; color:var(--muted); font-size:.83rem; border-top:1px solid var(--border); padding-top:16px;}
   .footer b{color:var(--text);}
   .shown-count{color:var(--muted); font-size:.82rem; margin:2px 0 10px;}
+
+  /* paint status (per-mini dots: s0 unpainted, s1 primed, s2 painted) */
+  .paint{white-space:nowrap;}
+  thead th.paint-h{width:1%;}
+  .pdot{
+    display:inline-block; width:15px; height:15px; border-radius:50%;
+    border:1.5px solid var(--border); margin-right:3px; vertical-align:middle;
+    cursor:pointer; transition:transform .1s ease, background .15s, border-color .15s;
+  }
+  .pdot:hover{transform:scale(1.28); border-color:var(--text);}
+  .pdot.s0{background:transparent;}
+  .pdot.s1{background:var(--yellow); border-color:var(--yellow);}
+  .pdot.s2{background:var(--green); border-color:var(--green);}
+  .pcount{font-size:.72rem; color:var(--muted); margin-left:5px; vertical-align:middle;
+    font-family:"JetBrains Mono",ui-monospace,monospace;}
+
+  .painttools{display:flex; flex-wrap:wrap; align-items:center; gap:14px;}
+  .legend{display:flex; flex-wrap:wrap; gap:14px; align-items:center; font-size:.78rem; color:var(--muted);}
+  .legend .li{display:flex; gap:6px; align-items:center;}
+  .legend .sw{display:inline-block; width:13px; height:13px; border-radius:50%; border:1.5px solid var(--border);}
+  .legend .sw.s1{background:var(--yellow); border-color:var(--yellow);}
+  .legend .sw.s2{background:var(--green); border-color:var(--green);}
+  .btn{
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
+    border-radius:10px; padding:8px 14px; font-size:.85rem; cursor:pointer; transition:all .16s ease;
+  }
+  .btn:hover{border-color:var(--lavender);}
+  .export-panel{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; margin-top:12px; display:none;
+  }
+  .export-panel.show{display:block;}
+  .export-panel p{margin:0 0 8px; font-size:.83rem; color:var(--muted);}
+  .export-panel p code{color:var(--text);}
+  .export-panel .x{float:right; cursor:pointer; color:var(--muted); font-size:.95rem;}
+  .export-panel textarea{
+    width:100%; min-height:120px; background:var(--bg); color:var(--text);
+    border:1px solid var(--border); border-radius:8px; padding:10px;
+    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.8rem; resize:vertical;
+  }
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--green); color:var(--bg); padding:10px 18px; border-radius:10px;
+    font-size:.88rem; font-weight:600; opacity:0; pointer-events:none;
+    transition:all .25s ease; z-index:50;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  /* paint progress bar */
+  .paintbar{margin:0 0 16px;}
+  .paintbar .track{display:flex; height:10px; border-radius:6px; overflow:hidden;
+    background:var(--surface); border:1px solid var(--border);}
+  .paintbar .seg.painted{background:var(--green);}
+  .paintbar .seg.primed{background:var(--yellow);}
+  .paintbar .lbl2{font-size:.78rem; color:var(--muted); margin-top:6px;}
+  .paintbar .lbl2 b{color:var(--text);}
 </style>
 </head>
 <body>
@@ -141,7 +197,25 @@
         <button class="chip" id="viewProduct" data-view="product">By product</button>
       </div>
     </div>
+    <div class="painttools">
+      <div class="legend">
+        <span class="grp-label">Paint</span>
+        <span class="li"><span class="sw s0"></span> Unpainted</span>
+        <span class="li"><span class="sw s1"></span> Primed</span>
+        <span class="li"><span class="sw s2"></span> Painted</span>
+        <span class="li" style="opacity:.75">· click a dot to cycle</span>
+      </div>
+      <button class="btn" id="exportBtn" style="margin-left:auto;">⤓ Export paint data</button>
+    </div>
+    <div class="export-panel" id="exportPanel">
+      <span class="x" id="exportClose" title="Close">✕</span>
+      <p>Copied to clipboard. To make this permanent &amp; cross-device, paste this over the
+        <code>const paintDefaults = …</code> line in <code>index.html</code> and commit.</p>
+      <textarea id="exportText" readonly spellcheck="false"></textarea>
+    </div>
   </div>
+
+  <div class="paintbar" id="paintbar"></div>
 
   <p class="shown-count" id="shownCount"></p>
 
@@ -149,7 +223,7 @@
   <div id="chassisView">
     <table>
       <thead>
-        <tr><th>'Mech</th><th>Class</th><th class="tons">Tons</th><th>Faction</th><th class="qty">Qty</th><th>Source(s)</th></tr>
+        <tr><th>'Mech</th><th>Class</th><th class="tons">Tons</th><th>Faction</th><th class="qty">Qty</th><th class="paint-h">Paint</th><th>Source(s)</th></tr>
       </thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -291,6 +365,75 @@ const products = [
   {p:"UrbanMech LAM", type:"Salvage Box", items:["UrbanMech LAM (UM-R60L) — BattleMech / AirMech / Aerospace modes + jump plume"], note:"The meme made real · needs Land-Air 'Mech rules, not standard 3062-legal"},
 ];
 
+// Committed paint status (seeds first load + new devices; localStorage overrides per browser).
+// Per-mini arrays keyed by "name§variant": 0 = unpainted, 1 = primed, 2 = painted.
+// Edit in the browser, then click "Export paint data" and paste the result over this line.
+const paintDefaults = {
+  "Adder§(Puma) Prime": [2],
+  "Akuma§AKU-1X": [1],
+  "Annihilator§ANH-1A": [2],
+  "Archer§ARC-2R": [1,2,2],
+  "Arctic Cheetah§(Hankyu) Prime": [2],
+  "Atlas§AS7-D": [2],
+  "Avatar§AV1-O": [1],
+  "Awesome§AWS-8Q": [2],
+  "Axman§AXM-2N": [1],
+  "Bane§(Kraken) 3": [2],
+  "Banshee§BNC-3S": [2],
+  "Battle Cobra§Prime": [2],
+  "BattleMaster§BLR-1G": [1],
+  "Black Lanner§Prime": [2],
+  "Blackjack§BJ-1": [0,2],
+  "Bushwacker§BSW-X1": [1],
+  "Caesar§CES-3R": [0,2],
+  "Catapult§CPLT-C1": [1,2],
+  "Centurion “Yen-Lo-Wang”§CN9-YLW": [2],
+  "Charger§CGR-3K": [1],
+  "Chimera§CMA-1K": [1],
+  "Crusader§CRD-3R": [2],
+  "Devastator§DVS-2": [1,1],
+  "Fire Moth§(Dasher) D": [2],
+  "Gargoyle§(Man O'War) Prime": [2,2],
+  "Grand Dragon§DRG-5K": [1],
+  "Griffin§GRF-1N / 2N": [1,2,2],
+  "Hatamoto-Chi§HTM-27T": [1],
+  "Hellbringer§(Loki) Prime": [2],
+  "Ice Ferret§(Fenris) Prime": [2],
+  "Jade Falcon 'Mechs (unconfirmed)§3 more": [2,2,2],
+  "Linebacker§Prime": [2],
+  "Locust§LCT-1V": [1,0],
+  "Loki Mk II§Prime": [1],
+  "Mad Dog§(Vulture) Prime": [2],
+  "Marauder IIC§": [2],
+  "Marauder II§MAD-8K": [1],
+  "Marauder§MAD-3R": [1,2,2],
+  "Mauler§MAL-1R": [1],
+  "Night Gyr§Prime": [2],
+  "Nightsky§NGS-4S": [2],
+  "Nova§(Black Hawk) Prime": [0,2],
+  "Panther§PNT-9R (DC)": [1],
+  "Phoenix Hawk§PXH-1": [1],
+  "Quickdraw§QKD-4G": [1],
+  "Regent§RGT-1A": [2],
+  "Rifleman IIC§": [2],
+  "Rifleman§RFL-3N": [0,2],
+  "Rokurokubi§RKK-1": [1],
+  "Shadow Hawk§SHD-2H": [0,2],
+  "Shiro§SH-1": [1],
+  "Starslayer§STY-3C": [1],
+  "Thunderbolt IIC§": [2],
+  "Thunderbolt§TDR-5S": [0,2],
+  "Timber Wolf§(Mad Cat) Prime": [0,1,2,2],
+  "UrbanMech LAM§UM-R60L": [1],
+  "Venom§SDR-9V": [1],
+  "Vindicator§VND-1R": [1],
+  "Viper§(Dragonfly) Prime": [2],
+  "Warhammer§WHM-6R / 9K": [0,2],
+  "Warhawk§(Masakari) Prime": [2],
+  "Wolfhound§WLF-1": [2,1],
+  "Wraith§TR1": [1]
+};
+
 let state = {q:"", f:"all", c:"all", view:"chassis"};
 
 function matches(m){
@@ -301,6 +444,71 @@ function matches(m){
     if(!hay.includes(state.q.toLowerCase())) return false;
   }
   return true;
+}
+
+// ---- paint status ----
+const PAINT_KEY = 'bti-paint';
+const PNAME = {0:'Unpainted',1:'Primed',2:'Painted'};
+const keyOf = m => m.n + '§' + (m.v||'');
+const escAttr = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+let paint = {};
+
+function loadPaint(){
+  let stored = {};
+  try{ stored = JSON.parse(localStorage.getItem(PAINT_KEY) || '{}'); }catch(e){}
+  paint = {};
+  mechs.forEach(m=>{
+    const k = keyOf(m);
+    const src = stored[k] || paintDefaults[k] || [];
+    const arr = new Array(m.q).fill(0);
+    for(let i=0;i<m.q;i++){ if(src[i]===1 || src[i]===2) arr[i]=src[i]; }
+    paint[k] = arr;
+  });
+}
+function savePaint(){
+  try{ localStorage.setItem(PAINT_KEY, JSON.stringify(paint)); }catch(e){}
+}
+function paintCell(m){
+  const k = keyOf(m), arr = paint[k] || [];
+  const dots = arr.map((v,i)=>
+    `<span class="pdot s${v}" data-k="${escAttr(k)}" data-i="${i}" title="${PNAME[v]} — click to cycle"></span>`
+  ).join('');
+  const done = arr.filter(v=>v===2).length;
+  return `<td class="paint">${dots}<span class="pcount">${done}/${m.q}</span></td>`;
+}
+function updatePaintSummary(){
+  let painted=0, primed=0, total=0;
+  mechs.forEach(m=>(paint[keyOf(m)]||[]).forEach(v=>{ total++; if(v===2)painted++; else if(v===1)primed++; }));
+  const unp = total - painted - primed;
+  const pct = t => total ? (t/total*100) : 0;
+  document.getElementById('paintbar').innerHTML = `
+    <div class="track">
+      <div class="seg painted" style="width:${pct(painted)}%"></div>
+      <div class="seg primed" style="width:${pct(primed)}%"></div>
+    </div>
+    <div class="lbl2"><b>${painted}</b> painted · <b>${primed}</b> primed · <b>${unp}</b> unpainted
+      <span style="opacity:.7">of ${total} minis</span></div>`;
+}
+function toast(msg){
+  let t = document.getElementById('toast');
+  if(!t){ t = document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+function exportPaint(){
+  const out = {};
+  Object.keys(paint).sort().forEach(k=>{ if(paint[k].some(v=>v>0)) out[k]=paint[k]; });
+  const body = Object.keys(out).map(k=>'  '+JSON.stringify(k)+': '+JSON.stringify(out[k])).join(',\n');
+  const snippet = 'const paintDefaults = {' + (body ? '\n'+body+'\n' : '') + '};';
+  const ta = document.getElementById('exportText');
+  ta.value = snippet;
+  document.getElementById('exportPanel').classList.add('show');
+  ta.focus(); ta.select();
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(snippet).then(()=>toast('Copied to clipboard')).catch(()=>{});
+  } else {
+    try{ document.execCommand('copy'); toast('Copied to clipboard'); }catch(e){}
+  }
 }
 
 function renderStats(){
@@ -341,6 +549,7 @@ function renderChassis(){
       <td class="tons">${tons}</td>
       <td><span class="badge b-${m.f}">${m.f}</span></td>
       <td class="qty ${m.q>1?'multi':''}">${m.q}</td>
+      ${paintCell(m)}
       <td class="src">${m.s.join(', ')}</td>
     </tr>`;
   }).join('');
@@ -368,6 +577,7 @@ function render(){
   document.getElementById('chassisView').classList.toggle('hidden', !chassisOn);
   document.getElementById('productView').classList.toggle('hidden', chassisOn);
   if(chassisOn) renderChassis(); else renderProducts();
+  updatePaintSummary();
 }
 
 // wire up controls
@@ -388,7 +598,26 @@ document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',(
   b.classList.add('active'); render();
 }));
 
+// paint: cycle a mini's status on click (delegated; survives table re-render)
+document.getElementById('tbody').addEventListener('click', e=>{
+  const dot = e.target.closest('.pdot'); if(!dot) return;
+  const k = dot.dataset.k, i = +dot.dataset.i;
+  if(!paint[k]) return;
+  paint[k][i] = (paint[k][i] + 1) % 3;
+  savePaint();
+  const v = paint[k][i];
+  dot.className = 'pdot s' + v;
+  dot.title = PNAME[v] + ' — click to cycle';
+  const done = paint[k].filter(x=>x===2).length;
+  dot.closest('td.paint').querySelector('.pcount').textContent = done + '/' + paint[k].length;
+  updatePaintSummary();
+});
+document.getElementById('exportBtn').addEventListener('click', exportPaint);
+document.getElementById('exportClose').addEventListener('click', ()=>
+  document.getElementById('exportPanel').classList.remove('show'));
+
 renderStats();
+loadPaint();
 render();
 </script>
 </body>
