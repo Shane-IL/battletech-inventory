@@ -69,6 +69,10 @@
     color:var(--muted); padding:8px 12px; border-bottom:1px solid var(--border); position:sticky; top:0;
     background:var(--bg);
   }
+  thead th[data-sort]{cursor:pointer; user-select:none; white-space:nowrap; transition:color .14s;}
+  thead th[data-sort]:hover{color:var(--text);}
+  thead th.sorted{color:var(--lavender);}
+  .sort-ind{font-size:.85em;}
   tbody td{padding:9px 12px; border-bottom:1px solid rgba(91,96,120,.4); font-size:.92rem; vertical-align:middle;}
   tbody tr{transition:background .14s;}
   tbody tr:hover{background:rgba(73,77,100,.45);}
@@ -223,7 +227,15 @@
   <div id="chassisView">
     <table>
       <thead>
-        <tr><th>'Mech</th><th>Class</th><th class="tons">Tons</th><th>Faction</th><th class="qty">Qty</th><th class="paint-h">Paint</th><th>Source(s)</th></tr>
+        <tr>
+          <th data-sort="name">'Mech<span class="sort-ind"></span></th>
+          <th data-sort="class">Class<span class="sort-ind"></span></th>
+          <th class="tons" data-sort="tons">Tons<span class="sort-ind"></span></th>
+          <th data-sort="faction">Faction<span class="sort-ind"></span></th>
+          <th class="qty" data-sort="qty">Qty<span class="sort-ind"></span></th>
+          <th class="paint-h" data-sort="paint">Paint<span class="sort-ind"></span></th>
+          <th data-sort="src">Source(s)<span class="sort-ind"></span></th>
+        </tr>
       </thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -434,7 +446,7 @@ const paintDefaults = {
   "Wraith§TR1": [1]
 };
 
-let state = {q:"", f:"all", c:"all", view:"chassis"};
+let state = {q:"", f:"all", c:"all", view:"chassis", sort:null};
 
 function matches(m){
   if(state.f!=="all" && m.f!==state.f) return false;
@@ -530,11 +542,43 @@ function renderStats(){
 }
 
 const classOrder = {Light:0,Medium:1,Heavy:2,Assault:3};
+const factionOrder = {IS:0,Clan:1};
+function cmpDefault(a,b){
+  if(a.f!==b.f) return a.f==="IS"?-1:1;
+  if(classOrder[a.c]!==classOrder[b.c]) return classOrder[a.c]-classOrder[b.c];
+  return a.t-b.t;
+}
+const paintFrac = m => { const a=paint[keyOf(m)]||[]; return m.q ? a.filter(v=>v===2).length/m.q : 0; };
+const paintDone = m => (paint[keyOf(m)]||[]).filter(v=>v===2).length;
+function cmpKey(key,a,b){
+  switch(key){
+    case 'name':    return a.n.localeCompare(b.n);
+    case 'class':   return classOrder[a.c]-classOrder[b.c];
+    case 'tons':    return a.t-b.t;
+    case 'faction': return factionOrder[a.f]-factionOrder[b.f];
+    case 'qty':     return a.q-b.q;
+    case 'paint':   return (paintFrac(a)-paintFrac(b)) || (paintDone(a)-paintDone(b));
+    case 'src':     return a.s.join(', ').localeCompare(b.s.join(', '));
+  }
+  return 0;
+}
+function updateSortIndicators(){
+  document.querySelectorAll('thead th[data-sort]').forEach(th=>{
+    const ind = th.querySelector('.sort-ind');
+    if(state.sort && state.sort.key===th.dataset.sort){
+      ind.textContent = state.sort.dir===1 ? ' ▲' : ' ▼';
+      th.classList.add('sorted');
+    } else {
+      ind.textContent = '';
+      th.classList.remove('sorted');
+    }
+  });
+}
 function renderChassis(){
+  updateSortIndicators();
   const rows = mechs.filter(matches).slice().sort((a,b)=>{
-    if(a.f!==b.f) return a.f==="IS"?-1:1;
-    if(classOrder[a.c]!==classOrder[b.c]) return classOrder[a.c]-classOrder[b.c];
-    return a.t-b.t;
+    if(!state.sort) return cmpDefault(a,b);
+    return cmpKey(state.sort.key,a,b) * state.sort.dir || a.n.localeCompare(b.n);
   });
   const tbody = document.getElementById('tbody');
   tbody.innerHTML = rows.map(m=>{
@@ -596,6 +640,14 @@ document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',(
   state.view=b.dataset.view;
   document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('active'));
   b.classList.add('active'); render();
+}));
+// sort: click a header to cycle ascending → descending → default (grouped)
+document.querySelectorAll('thead th[data-sort]').forEach(th=>th.addEventListener('click',()=>{
+  const key = th.dataset.sort;
+  if(!state.sort || state.sort.key!==key) state.sort = {key, dir:1};
+  else if(state.sort.dir===1) state.sort.dir = -1;
+  else state.sort = null;
+  renderChassis();
 }));
 
 // paint: cycle a mini's status on click (delegated; survives table re-render)
