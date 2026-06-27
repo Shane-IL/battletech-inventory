@@ -1,0 +1,119 @@
+--- /mnt/user-data/uploads/forces.html	2026-06-27 18:23:31.742837000 +0000
++++ /mnt/user-data/outputs/forces.html	2026-06-27 06:05:10.027659000 +0000
+@@ -23,9 +23,9 @@
+   .sub{color:var(--muted); font-size:.94rem; margin:0 0 16px;}
+   code,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+ 
+-  .banner{background:rgba(238,212,159,.10); border:1px solid var(--yellow); border-radius:12px;
++  .banner{background:rgba(166,218,149,.10); border:1px solid var(--green); border-radius:12px;
+     padding:11px 15px; margin-bottom:20px; font-size:.85rem; color:var(--text);}
+-  .banner b{color:var(--yellow);}
++  .banner b{color:var(--green);}
+ 
+   .section-h{font-size:1.15rem; margin:24px 0 12px; display:flex; align-items:center; gap:10px;}
+   .section-h.is{color:var(--blue);} .section-h.clan{color:var(--mauve);}
+@@ -69,56 +69,57 @@
+   <p class="sub">Casual 3062-era lists · Battle Value at Regular (4/5) unless noted</p>
+ 
+   <div class="banner">
+-    <b>BV status.</b> Clan totals are verified against the Master Unit List <span class="pip vf">verified</span>. Inner Sphere totals are still memory estimates <span class="pip es">estimate</span> — confirm in MegaMek before a tournament. Every figure is approximate to ±50; load the list in MegaMek for the exact number and to set pilot skills.
++    <b>BV status.</b> All totals are now verified against the Master Unit List <span class="pip vf">verified</span> — both Inner Sphere and Clan. Every figure is the MUL BV&nbsp;2.0 at 4/5. The earlier IS estimates were corrected; four were materially off (Centurion −393, Banshee +461, Hatamoto-Chi −193, Caesar −172). Load any list in MegaMek to set pilot skills and confirm the exact total.
+   </div>
+ 
+   <div class="section-h is"><span>Inner Sphere Lances</span><span class="line"></span></div>
+ 
+-  <div class="force est">
+-    <div class="force-head"><h3>Long Reach</h3><span class="tot est">≈ 5,740</span></div>
++  <div class="force">
++    <div class="force-head"><h3>Long Reach</h3><span class="tot ok">5,744</span></div>
+     <div class="tagline">Stand-off energy / missile gunline <span class="n">— hold a ridge and punish anything inside ~15 hexes. Intro tech, forgiving to fly.</span></div>
+     <table>
+       <tr><th>'Mech</th><th>Variant</th><th class="bv">BV</th><th>Role</th></tr>
+       <tr><td class="unit">Awesome</td><td class="cfg">AWS-8Q</td><td class="bv">1,605</td><td class="role">Triple-PPC reach anchor</td></tr>
+       <tr><td class="unit">Marauder</td><td class="cfg">MAD-3R</td><td class="bv">1,363</td><td class="role">PPC + AC/5 sniper</td></tr>
+-      <tr><td class="unit">Warhammer</td><td class="cfg">WHM-6R</td><td class="bv">1,300</td><td class="role">Twin PPC</td></tr>
+-      <tr><td class="unit">Archer</td><td class="cfg">ARC-2R</td><td class="bv">1,471</td><td class="role">LRM fire support</td></tr>
+-      <tr class="sum"><td colspan="2">Total <span class="pip es">estimate</span></td><td class="bv">5,739</td><td></td></tr>
++      <tr><td class="unit">Warhammer</td><td class="cfg">WHM-6R</td><td class="bv">1,299</td><td class="role">Twin PPC</td></tr>
++      <tr><td class="unit">Archer</td><td class="cfg">ARC-2R</td><td class="bv">1,477</td><td class="role">LRM fire support</td></tr>
++      <tr class="sum"><td colspan="2">Total <span class="pip vf">verified</span></td><td class="bv">5,744</td><td></td></tr>
+     </table>
+-    <div class="note"><b>Paint:</b> Wolf's Dragoons. You've already got the Marauder, Warhammer & Archer in Dragoons colors; an Awesome in the same scheme is fully canon (a Star League PPC boat is exactly their style). Match your regiment — Alpha is rust-red trimmed black.</div>
++    <div class="note">Estimate was dead-on. WHM-6R is 1,299 (not 1,300) and ARC-2R is 1,477 (not 1,471) — net +5. ~256 of headroom; a Regular→Veteran bump on the Awesome lands it near 6k. <b>Paint:</b> Wolf's Dragoons. You've already got the Marauder, Warhammer &amp; Archer in Dragoons colors; an Awesome in the same scheme is fully canon (a Star League PPC boat is exactly their style). Match your regiment — Alpha is rust-red trimmed black.</div>
+   </div>
+ 
+-  <div class="force est">
+-    <div class="force-head"><h3>Hammerfall</h3><span class="tot est">≈ 5,870</span></div>
++  <div class="force">
++    <div class="force-head"><h3>Hammerfall</h3><span class="tot ok">5,940</span></div>
+     <div class="tagline">Close-range brawl, two AC/20s <span class="n">— wants terrain to close under the guns, then deletes things point-blank. The anvil to Long Reach.</span></div>
+     <table>
+       <tr><th>'Mech</th><th>Variant</th><th class="bv">BV</th><th>Role</th></tr>
+       <tr><td class="unit">Atlas</td><td class="cfg">AS7-D</td><td class="bv">1,897</td><td class="role">AC/20 hammer</td></tr>
+-      <tr><td class="unit">Centurion</td><td class="cfg">CN9-YLW</td><td class="bv">1,350</td><td class="role">Second AC/20 (Yen-Lo-Wang)</td></tr>
++      <tr><td class="unit">Centurion</td><td class="cfg">CN9-YLW</td><td class="bv">957</td><td class="role">Second AC/20 (Yen-Lo-Wang)</td></tr>
+       <tr><td class="unit">Thunderbolt</td><td class="cfg">TDR-5S</td><td class="bv">1,335</td><td class="role">Mid-range workhorse</td></tr>
+-      <tr><td class="unit">Banshee</td><td class="cfg">BNC-3S</td><td class="bv">1,290</td><td class="role">Assault brawler</td></tr>
+-      <tr class="sum"><td colspan="2">Total <span class="pip es">estimate</span></td><td class="bv">5,872</td><td></td></tr>
++      <tr><td class="unit">Banshee</td><td class="cfg">BNC-3S</td><td class="bv">1,751</td><td class="role">Assault brawler</td></tr>
++      <tr class="sum"><td colspan="2">Total <span class="pip vf">verified</span></td><td class="bv">5,940</td><td></td></tr>
+     </table>
++    <div class="note">Two big corrections that nearly cancelled. <b>Centurion CN9-YLW is 957, not ~1,350</b> — the canonical Yen-Lo-Wang is a stripped 50-tonner (AC/20 + titanium nails, no LRM), so it's a glass cannon that brings the AC/20 but dies fast in an assault lance. <b>Banshee BNC-3S is 1,751, not ~1,290</b> — the 3026 Defiance rebuild (2× PPC + AC/10 + 4 ML + SRM-6) is far beefier than the old undergunned 3E. Net only +68 vs the estimate; the lance is legal at 5,940 with ~60 of headroom. If you'd rather a tougher second AC/20, the CN9-YLW2 (Gauss + hatchet + TSM) is 1,415 — but that pushes the lance to 6,398, over cap, so you'd drop the Thunderbolt to fit it.</div>
+   </div>
+ 
+-  <div class="force est">
+-    <div class="force-head"><h3>Mixed Spear</h3><span class="tot est">≈ 5,380</span></div>
+-    <div class="tagline">Balanced roles <span class="n">— harasser spots, Caesar snipes, Catapult arcs, Hatamoto finishes. Runs light by design; swap Catapult→Marauder II to reach 6k.</span></div>
++  <div class="force">
++    <div class="force-head"><h3>Mixed Spear</h3><span class="tot ok">5,016</span></div>
++    <div class="tagline">Balanced roles <span class="n">— Locust spots, Caesar snipes, Catapult arcs, Hatamoto finishes. Now runs very light after verification — lots of room to upgrade.</span></div>
+     <table>
+       <tr><th>'Mech</th><th>Variant</th><th class="bv">BV</th><th>Role</th></tr>
+       <tr><td class="unit">Locust</td><td class="cfg">LCT-1V</td><td class="bv">432</td><td class="role">Harasser</td></tr>
+-      <tr><td class="unit">Caesar</td><td class="cfg">CES-3R</td><td class="bv">1,750</td><td class="role">Sniper — Gauss + ER PPC</td></tr>
+-      <tr><td class="unit">Hatamoto-Chi</td><td class="cfg">HTM-27T</td><td class="bv">1,800</td><td class="role">Brawler</td></tr>
++      <tr><td class="unit">Caesar</td><td class="cfg">CES-3R</td><td class="bv">1,578</td><td class="role">Sniper — Gauss + ER PPC</td></tr>
++      <tr><td class="unit">Hatamoto-Chi</td><td class="cfg">HTM-27T</td><td class="bv">1,607</td><td class="role">Brawler</td></tr>
+       <tr><td class="unit">Catapult</td><td class="cfg">CPLT-C1</td><td class="bv">1,399</td><td class="role">LRM fire support</td></tr>
+-      <tr class="sum"><td colspan="2">Total <span class="pip es">estimate</span></td><td class="bv">5,381</td><td></td></tr>
++      <tr class="sum"><td colspan="2">Total <span class="pip vf">verified</span></td><td class="bv">5,016</td><td></td></tr>
+     </table>
+-    <div class="note"><b>Paint:</b> run the Caesar as the CES-3R "Archangel" to match your Avanti's Angels scheme (note that variant swaps to Clan-tech weapons and climbs to ~2,098 BV).</div>
++    <div class="note">Both heavies were overestimated: <b>CES-3R is 1,578, not 1,750</b>; <b>HTM-27T is 1,607, not 1,800</b>. That leaves <b>~984 of headroom</b> — this lance is now a full assault 'Mech under cap. Easiest upgrades to spend it: Caesar → <span class="cfg">CES-3S</span> (1,909, +331) and Hatamoto → <span class="cfg">HTM-28T</span> (2,039, +432, ER-PPC/Streak/DHS lostech refit) brings it to 5,779 with much more teeth. Or take the old hint and swap Catapult → Marauder II — note your <span class="cfg">MAD-8K</span> mini's printed config is a Dark Age design (2,849, Advanced, <b>not 3062-legal</b>), but the same model runs the era-legal <span class="cfg">MAD-4A</span> (2,073) or <span class="cfg">MAD-5A</span> (2,058) sheet, landing the lance at ~5,690. <b>Paint:</b> run the Caesar as the CES-3R "Archangel" to match your Avanti's Angels scheme — but that variant swaps to Clan-tech weapons and climbs to ~2,098 BV (Experimental).</div>
+   </div>
+ 
+   <div class="section-h clan"><span>Clan Stars</span><span class="line"></span></div>
+ 
+   <div class="force">
+-    <div class="force-head"><h3>Iron Wall</h3><span class="tot ok">≈ 5,425</span></div>
++    <div class="force-head"><h3>Iron Wall</h3><span class="tot ok">5,425</span></div>
+     <div class="tagline">Assault-heavy, durable <span class="n">— two tough 80-tonners trade blows up front while the Mad Dog rains LRMs. Slow, simple, the anti-Wolfpack.</span></div>
+     <table>
+       <tr><th>'Mech</th><th>Config</th><th class="bv">BV</th><th>Role</th></tr>
+@@ -131,7 +132,7 @@
+   </div>
+ 
+   <div class="force">
+-    <div class="force-head"><h3>Fire Support</h3><span class="tot ok">≈ 5,844</span></div>
++    <div class="force-head"><h3>Fire Support</h3><span class="tot ok">5,844</span></div>
+     <div class="tagline">Corrected from the old "Heavy Reduced Star" <span class="n">— same three chassis, now legal by using the smart configs (and the Nova S can actually cool its lasers).</span></div>
+     <table>
+       <tr><th>'Mech</th><th>Config</th><th class="bv">BV</th><th>Role</th></tr>
+@@ -143,7 +144,7 @@
+   </div>
+ 
+   <div class="force">
+-    <div class="force-head"><h3>Mad Cat Pair</h3><span class="tot ok">≈ 5,703</span></div>
++    <div class="force-head"><h3>Mad Cat Pair</h3><span class="tot ok">5,703</span></div>
+     <div class="tagline">Two iconic heavies <span class="n">— the Clan silhouette everyone fears, finally budget-legal via the B config. You own four Timber Wolves, so this is easy.</span></div>
+     <table>
+       <tr><th>'Mech</th><th>Config</th><th class="bv">BV</th><th>Role</th></tr>
+@@ -182,7 +183,7 @@
+ 
+   <div class="footer">
+     <p><b>Fielding.</b> The three IS lances share no minis — run any or all together. The Clan Stars overlap heavily on the Adder, Nova, Timber Wolf and Gargoyle, so treat them as <b>alternative</b> forces: one Star per game. Configs are listed exactly so the record-sheet pull is unambiguous (e.g. Nova <b>S</b>, Adder <b>A</b>, Timber Wolf <b>B</b>) — the cheaper alt-configs are where the value lives, per the <a href="clan-variants.html" style="color:var(--blue);">Clan Variants</a> page.</p>
+-    <p>Pilot skill is the cleanest dial to hit exactly 6,000: a Regular→Veteran bump adds ~32% of that 'Mech's BV. Set it in MegaMek and let it compute the exact total.</p>
++    <p>Pilot skill is the cleanest dial to hit exactly 6,000: a Regular→Veteran bump adds ~32% of that 'Mech's BV. Set it in MegaMek and let it compute the exact total. All BVs above are MUL BV&nbsp;2.0 at 4/5 (Regular).</p>
+   </div>
+ </div>
+ </body>

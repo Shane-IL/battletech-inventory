@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BattleTech Inventory</title>
+<style>
+  :root{
+    --bg:#24273a; --card:#363a4f; --surface:#494d64; --border:#5b6078;
+    --text:#cad3f5; --muted:#a5adcb;
+    --blue:#8aadf4; --green:#a6da95; --red:#ed8796; --yellow:#eed49f;
+    --teal:#8bd5ca; --pink:#f5bde6; --mauve:#c6a0f6; --peach:#f5a97f; --lavender:#b7bdf8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5; padding:28px 20px 64px;
+  }
+  .wrap{max-width:1080px; margin:0 auto;}
+  h1{font-size:1.7rem; margin:0 0 4px; font-weight:650; letter-spacing:.2px;}
+  h1 .accent{color:var(--lavender);}
+  .sub{color:var(--muted); font-size:.95rem; margin:0 0 22px;}
+  code,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+
+  /* summary chips */
+  .stats{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:22px;}
+  .stat{
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:10px 16px; min-width:96px;
+    box-shadow:0 4px 14px -8px rgba(138,173,244,.25);
+  }
+  .stat .num{font-size:1.5rem; font-weight:650; font-family:"JetBrains Mono",ui-monospace,monospace;}
+  .stat .lbl{font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px;}
+  .stat.is .num{color:var(--blue);} .stat.clan .num{color:var(--mauve);}
+  .stat.tot .num{color:var(--lavender);}
+
+  /* controls */
+  .controls{
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:16px; margin-bottom:18px; display:flex; flex-direction:column; gap:14px;
+    box-shadow:0 6px 20px -12px rgba(0,0,0,.5);
+  }
+  .search{
+    width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    color:var(--text); padding:11px 14px; font-size:.95rem; transition:box-shadow .18s,border-color .18s;
+  }
+  .search::placeholder{color:var(--muted);}
+  .search:focus{outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(138,173,244,.18);}
+  .filter-row{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+  .filter-row .grp-label{font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-right:2px;}
+  .chip{
+    background:var(--surface); border:1px solid var(--border); color:var(--muted);
+    border-radius:999px; padding:6px 14px; font-size:.85rem; cursor:pointer;
+    transition:all .16s ease;
+  }
+  .chip:hover{color:var(--text); border-color:var(--lavender);}
+  .chip.active{background:var(--lavender); color:var(--bg); border-color:var(--lavender); font-weight:600;}
+  .chip.f-is.active{background:var(--blue);} .chip.f-clan.active{background:var(--mauve);}
+  .chip.c-Light.active{background:var(--teal);} .chip.c-Medium.active{background:var(--green);}
+  .chip.c-Heavy.active{background:var(--yellow);} .chip.c-Assault.active{background:var(--peach);}
+
+  .viewtoggle{display:flex; gap:8px; margin-left:auto;}
+
+  /* table */
+  table{width:100%; border-collapse:collapse; margin-top:4px;}
+  thead th{
+    text-align:left; font-size:.72rem; text-transform:uppercase; letter-spacing:.6px;
+    color:var(--muted); padding:8px 12px; border-bottom:1px solid var(--border); position:sticky; top:0;
+    background:var(--bg);
+  }
+  tbody td{padding:9px 12px; border-bottom:1px solid rgba(91,96,120,.4); font-size:.92rem; vertical-align:middle;}
+  tbody tr{transition:background .14s;}
+  tbody tr:hover{background:rgba(73,77,100,.45);}
+  .name{font-weight:600;}
+  .var{color:var(--muted); font-size:.82rem;}
+  .src{color:var(--muted); font-size:.83rem;}
+  .qty{font-family:"JetBrains Mono",ui-monospace,monospace; text-align:center; width:42px;}
+  .qty.multi{color:var(--green); font-weight:650;}
+  td.tons{font-family:"JetBrains Mono",ui-monospace,monospace; color:var(--muted); text-align:right; width:48px;}
+
+  .badge{display:inline-block; border-radius:8px; padding:2px 9px; font-size:.74rem; font-weight:600; white-space:nowrap;}
+  .b-Light{background:rgba(139,213,202,.16); color:var(--teal);}
+  .b-Medium{background:rgba(166,218,149,.16); color:var(--green);}
+  .b-Heavy{background:rgba(238,212,159,.16); color:var(--yellow);}
+  .b-Assault{background:rgba(245,169,127,.16); color:var(--peach);}
+  .b-IS{background:rgba(138,173,244,.15); color:var(--blue);}
+  .b-Clan{background:rgba(198,160,246,.16); color:var(--mauve);}
+  .tag{display:inline-block; margin-left:6px; font-size:.68rem; padding:1px 7px; border-radius:6px; background:rgba(237,135,150,.15); color:var(--red); vertical-align:middle;}
+  .tag.iic{background:rgba(245,189,230,.15); color:var(--pink);}
+  .tag.lam{background:rgba(183,189,248,.16); color:var(--lavender);}
+
+  /* product view */
+  .pcard{
+    background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px;
+    margin-bottom:14px; box-shadow:0 5px 18px -12px rgba(0,0,0,.5);
+  }
+  .pcard h3{margin:0 0 4px; font-size:1.05rem;}
+  .pcard .ptype{font-size:.7rem; text-transform:uppercase; letter-spacing:.6px; color:var(--peach);}
+  .pcard.box .ptype{color:var(--blue);}
+  .mlist{display:flex; flex-wrap:wrap; gap:7px; margin-top:10px;}
+  .mlist span{background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:4px 10px; font-size:.82rem;}
+  .pnote{color:var(--muted); font-size:.83rem; margin-top:10px; font-style:italic;}
+
+  .hidden{display:none;}
+  .empty{color:var(--muted); padding:24px; text-align:center;}
+  .footer{margin-top:26px; color:var(--muted); font-size:.83rem; border-top:1px solid var(--border); padding-top:16px;}
+  .footer b{color:var(--text);}
+  .shown-count{color:var(--muted); font-size:.82rem; margin:2px 0 10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="font-size:.85rem; margin-bottom:14px; display:flex; gap:16px;">
+    <span style="color:#a5adcb;">Inventory</span>
+    <a href="clan-variants.html" style="color:#8aadf4; text-decoration:none;">Clan Variants →</a>
+    <a href="forces.html" style="color:#8aadf4; text-decoration:none;">Forces →</a>
+  </div>
+  <h1>Shane's <span class="accent">BattleTech</span> Inventory</h1>
+  <p class="sub">Confirmed against Sarna · grouped by chassis (duplicates consolidated) and by product</p>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="controls">
+    <input class="search" id="search" type="text" placeholder="Search chassis, variant, or source…" autocomplete="off">
+    <div class="filter-row" id="factionFilters">
+      <span class="grp-label">Faction</span>
+      <button class="chip active" data-f="all">All</button>
+      <button class="chip f-is" data-f="IS">Inner Sphere</button>
+      <button class="chip f-clan" data-f="Clan">Clan</button>
+    </div>
+    <div class="filter-row" id="classFilters">
+      <span class="grp-label">Weight</span>
+      <button class="chip active" data-c="all">All</button>
+      <button class="chip c-Light" data-c="Light">Light</button>
+      <button class="chip c-Medium" data-c="Medium">Medium</button>
+      <button class="chip c-Heavy" data-c="Heavy">Heavy</button>
+      <button class="chip c-Assault" data-c="Assault">Assault</button>
+      <div class="viewtoggle">
+        <button class="chip active" id="viewChassis" data-view="chassis">By chassis</button>
+        <button class="chip" id="viewProduct" data-view="product">By product</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="shown-count" id="shownCount"></p>
+
+  <!-- chassis view -->
+  <div id="chassisView">
+    <table>
+      <thead>
+        <tr><th>'Mech</th><th>Class</th><th class="tons">Tons</th><th>Faction</th><th class="qty">Qty</th><th>Source(s)</th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <p class="empty hidden" id="emptyMsg">No 'Mechs match those filters.</p>
+  </div>
+
+  <!-- product view -->
+  <div id="productView" class="hidden"></div>
+
+  <div class="footer">
+    <p><b>Notes.</b> Tonnages are standard; variant codes are the common/default version (any chassis can run other record sheets on the same mini). Quantities count physical minis across all sources, so several chassis you own more than one of.</p>
+    <p><span class="tag">primitive</span> The Proliferation Cycle seven use primitive tech (Interstellar Operations: Alternate Eras) — not standard 3062-legal. <span class="tag iic">IIC / 2nd-line</span> The Aces: Scouring Sands Clan 'Mechs are Jade Falcon second-line / IIC designs; 3 of its 7 'Mechs aren't yet confirmed by name.</p>
+  </div>
+</div>
+
+<script>
+// faction: IS | Clan ; class: Light/Medium/Heavy/Assault ; grp: undefined | 'primitive' | 'iic'
+const mechs = [
+  // --- Inner Sphere ---
+  {n:"Locust",v:"LCT-1V",c:"Light",t:20,f:"IS",q:2,s:["AGoAC","Alpha Strike box"]},
+  {n:"Flea",v:"FLE-15",c:"Light",t:20,f:"IS",q:1,s:["Mercenaries"]},
+  {n:"Wasp",v:"WSP-3W",c:"Light",t:20,f:"IS",q:1,s:["Alpha Strike box"]},
+  {n:"Stinger",v:"STG-3R",c:"Light",t:20,f:"IS",q:1,s:["IS Command Lance"]},
+  {n:"Commando",v:"COM-2D",c:"Light",t:25,f:"IS",q:1,s:["AGoAC"]},
+  {n:"UrbanMech",v:"UM-R60 +variants",c:"Light",t:30,f:"IS",q:4,s:["UrbanMech Lance"]},
+  {n:"Firefly",v:"FFL-4A",c:"Light",t:30,f:"IS",q:1,s:["Mercenaries"]},
+  {n:"Venom",v:"SDR-9V",c:"Light",t:30,f:"IS",q:1,s:["Kurita Ranger Lance"]},
+  {n:"Valkyrie",v:"VLK-QA",c:"Light",t:30,f:"IS",q:1,s:["IS Command Lance"]},
+  {n:"Panther",v:"PNT-9R (DC)",c:"Light",t:35,f:"IS",q:1,s:["Kurita Ranger Lance"]},
+  {n:"Wolfhound",v:"WLF-1",c:"Light",t:35,f:"IS",q:2,s:["Kell Hounds","Somerset Strikers"]},
+  {n:"Rokurokubi",v:"RKK-1",c:"Light",t:35,f:"IS",q:1,s:["Kurita Command Lance"]},
+  {n:"Chimera",v:"CMA-1K",c:"Medium",t:40,f:"IS",q:1,s:["Kurita Ranger Lance"]},
+  {n:"Phoenix Hawk",v:"PXH-1",c:"Medium",t:45,f:"IS",q:1,s:["Alpha Strike box"]},
+  {n:"Blackjack",v:"BJ-1",c:"Medium",t:45,f:"IS",q:2,s:["Alpha Strike box","Wolf's Dragoons"]},
+  {n:"Vindicator",v:"VND-1R",c:"Medium",t:45,f:"IS",q:1,s:["Beginner Box 2nd Ed"]},
+  {n:"Nightsky",v:"NGS-4S",c:"Medium",t:50,f:"IS",q:1,s:["Kell Hounds"]},
+  {n:"Chameleon",v:"CLN-7V",c:"Medium",t:50,f:"IS",q:1,s:["Mercenaries"]},
+  {n:"Starslayer",v:"STY-3C",c:"Medium",t:50,f:"IS",q:1,s:["Mercenaries"]},
+  {n:"Centurion \u201cYen-Lo-Wang\u201d",v:"CN9-YLW",c:"Medium",t:50,f:"IS",q:1,s:["Essentials"]},
+  {n:"Shadow Hawk",v:"SHD-2H",c:"Medium",t:55,f:"IS",q:2,s:["AGoAC","Gray Death Legion"]},
+  {n:"Wolverine",v:"WVR-6R",c:"Medium",t:55,f:"IS",q:1,s:["AGoAC"]},
+  {n:"Griffin",v:"GRF-1N / 2N",c:"Medium",t:55,f:"IS",q:3,s:["Beginner Box 2nd Ed","Kell Hounds","Legendary MW III"]},
+  {n:"Wraith",v:"TR1",c:"Medium",t:55,f:"IS",q:1,s:["Alpha Strike box"]},
+  {n:"Bushwacker",v:"BSW-X1",c:"Medium",t:55,f:"IS",q:1,s:["Somerset Strikers"]},
+  {n:"Grand Dragon",v:"DRG-5K",c:"Heavy",t:60,f:"IS",q:1,s:["Kurita Command Lance"]},
+  {n:"Ostsol",v:"OTL-4D",c:"Heavy",t:60,f:"IS",q:1,s:["Mercenaries"]},
+  {n:"Rifleman",v:"RFL-3N",c:"Heavy",t:60,f:"IS",q:2,s:["Essentials","Wolf's Dragoons"]},
+  {n:"Quickdraw",v:"QKD-4G",c:"Heavy",t:60,f:"IS",q:1,s:["Mercenaries"]},
+  {n:"Catapult",v:"CPLT-C1",c:"Heavy",t:65,f:"IS",q:2,s:["AGoAC","Gray Death Legion"]},
+  {n:"Thunderbolt",v:"TDR-5S",c:"Heavy",t:65,f:"IS",q:2,s:["AGoAC","Eridani Light Horse"]},
+  {n:"Axman",v:"AXM-2N",c:"Heavy",t:65,f:"IS",q:1,s:["Somerset Strikers"]},
+  {n:"Crusader",v:"CRD-3R",c:"Heavy",t:65,f:"IS",q:1,s:["Kell Hounds"]},
+  {n:"Avatar",v:"AV1-O",c:"Heavy",t:70,f:"IS",q:1,s:["Kurita Ranger Lance"]},
+  {n:"Archer",v:"ARC-2R",c:"Heavy",t:70,f:"IS",q:3,s:["IS Command Lance","Alpha Strike box","Wolf's Dragoons"]},
+  {n:"Warhammer",v:"WHM-6R / 9K",c:"Heavy",t:70,f:"IS",q:2,s:["Alpha Strike box","Legendary MW III"]},
+  {n:"Caesar",v:"CES-3R",c:"Heavy",t:70,f:"IS",q:2,s:["Mercenaries","Legendary MW II"]},
+  {n:"Marauder",v:"MAD-3R",c:"Heavy",t:75,f:"IS",q:3,s:["IS Command Lance","Legendary MW II (Red Hunter)","Legendary MW III (Bounty Hunter)"]},
+  {n:"Shiro",v:"SH-1",c:"Heavy",t:75,f:"IS",q:1,s:["Kurita Command Lance"]},
+  {n:"Regent",v:"RGT-1A",c:"Heavy",t:75,f:"IS",q:1,s:["Gray Death Legion"]},
+  {n:"Loki Mk II",v:"Prime",c:"Heavy",t:65,f:"IS",q:1,s:["Legendary MW III"],note:"unique to this pack"},
+  {n:"Awesome",v:"AWS-8Q",c:"Assault",t:80,f:"IS",q:1,s:["AGoAC"]},
+  {n:"Hatamoto-Chi",v:"HTM-27T",c:"Assault",t:80,f:"IS",q:1,s:["Somerset Strikers"]},
+  {n:"Charger",v:"CGR-3K",c:"Assault",t:80,f:"IS",q:1,s:["Legendary MW II"]},
+  {n:"BattleMaster",v:"BLR-1G",c:"Assault",t:85,f:"IS",q:1,s:["AGoAC"]},
+  {n:"Mauler",v:"MAL-1R",c:"Assault",t:90,f:"IS",q:1,s:["Somerset Strikers"]},
+  {n:"Akuma",v:"AKU-1X",c:"Assault",t:90,f:"IS",q:1,s:["Kurita Command Lance"]},
+  {n:"Cyclops",v:"CP-10-Z",c:"Assault",t:90,f:"IS",q:1,s:["Eridani Light Horse"]},
+  {n:"Sagittaire",v:"SGT-14D",c:"Assault",t:95,f:"IS",q:1,s:["Eridani Light Horse"]},
+  {n:"Banshee",v:"BNC-3S",c:"Assault",t:95,f:"IS",q:1,s:["Eridani Light Horse"]},
+  {n:"Atlas",v:"AS7-D",c:"Assault",t:100,f:"IS",q:1,s:["Alpha Strike box"]},
+  {n:"Annihilator",v:"ANH-1A",c:"Assault",t:100,f:"IS",q:1,s:["Wolf's Dragoons"]},
+  {n:"Devastator",v:"DVS-2",c:"Assault",t:100,f:"IS",q:2,s:["Mercenaries","Legendary MW II"]},
+  {n:"Marauder II",v:"MAD-8K",c:"Assault",t:100,f:"IS",q:1,s:["Legendary MW III"]},
+
+  // --- Clan ---
+  {n:"Fire Moth",v:"(Dasher) D",c:"Light",t:20,f:"Clan",q:1,s:["Alpha Strike box"]},
+  {n:"Pouncer",v:"Prime",c:"Light",t:30,f:"Clan",q:1,s:["Alpha Strike box"]},
+  {n:"Arctic Cheetah",v:"(Hankyu) Prime",c:"Light",t:30,f:"Clan",q:1,s:["Clan Support Star"]},
+  {n:"Adder",v:"(Puma) Prime",c:"Light",t:35,f:"Clan",q:1,s:["Clan Invasion"]},
+  {n:"Viper",v:"(Dragonfly) Prime",c:"Medium",t:40,f:"Clan",q:1,s:["Clan Heavy Striker Star"]},
+  {n:"Battle Cobra",v:"Prime",c:"Medium",t:40,f:"Clan",q:1,s:["Clan Support Star"]},
+  {n:"Mongrel",v:"(Grendel) Prime",c:"Medium",t:45,f:"Clan",q:1,s:["Clan Invasion"]},
+  {n:"Ice Ferret",v:"(Fenris) Prime",c:"Medium",t:45,f:"Clan",q:1,s:["Clan Heavy Striker Star"]},
+  {n:"Nova",v:"(Black Hawk) Prime",c:"Medium",t:50,f:"Clan",q:2,s:["Clan Invasion","Alpha Strike box"]},
+  {n:"Black Lanner",v:"Prime",c:"Medium",t:55,f:"Clan",q:1,s:["Clan Support Star"]},
+  {n:"Mad Dog",v:"(Vulture) Prime",c:"Heavy",t:60,f:"Clan",q:1,s:["Clan Heavy Striker Star"]},
+  {n:"Hellbringer",v:"(Loki) Prime",c:"Heavy",t:65,f:"Clan",q:1,s:["Clan Heavy Striker Star"]},
+  {n:"Linebacker",v:"Prime",c:"Heavy",t:65,f:"Clan",q:1,s:["Clan Support Star"]},
+  {n:"Night Gyr",v:"Prime",c:"Heavy",t:75,f:"Clan",q:1,s:["Clan Support Star"]},
+  {n:"Timber Wolf",v:"(Mad Cat) Prime",c:"Heavy",t:75,f:"Clan",q:4,s:["Clan Invasion","Alpha Strike box","Wolf's Dragoons","Legendary MW III"]},
+  {n:"Gargoyle",v:"(Man O'War) Prime",c:"Assault",t:80,f:"Clan",q:2,s:["Clan Heavy Striker Star","Gray Death Legion"]},
+  {n:"Warhawk",v:"(Masakari) Prime",c:"Assault",t:85,f:"Clan",q:1,s:["Alpha Strike box"]},
+  {n:"Executioner",v:"(Gladiator) Prime",c:"Assault",t:95,f:"Clan",q:1,s:["Clan Invasion"]},
+
+  // --- Clan IIC / 2nd-line (Aces: Scouring Sands, Jade Falcon) ---
+  {n:"Thunderbolt IIC",v:"",c:"Heavy",t:65,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
+  {n:"Rifleman IIC",v:"",c:"Heavy",t:65,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
+  {n:"Marauder IIC",v:"",c:"Assault",t:85,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
+  {n:"Bane",v:"(Kraken) 3",c:"Assault",t:100,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
+  {n:"Jade Falcon 'Mechs (unconfirmed)",v:"3 more",c:"Heavy",t:0,f:"Clan",q:3,s:["Aces: Scouring Sands"],grp:"iic",note:"names not yet confirmed"},
+
+  // --- Primitive (Proliferation Cycle) ---
+  {n:"Mackie",v:"MSK-5S",c:"Assault",t:100,f:"IS",q:1,s:["Proliferation Cycle"],grp:"primitive"},
+  {n:"Battleaxe",v:"BKX-7K",c:"Heavy",t:70,f:"IS",q:1,s:["Proliferation Cycle"],grp:"primitive"},
+  {n:"Ymir",v:"BWP-2B",c:"Heavy",t:70,f:"IS",q:1,s:["Proliferation Cycle"],grp:"primitive"},
+  {n:"Gladiator",v:"GLR-1R",c:"Medium",t:55,f:"IS",q:1,s:["Proliferation Cycle"],grp:"primitive"},
+  {n:"Icarus II",v:"ICR-1S",c:"Medium",t:40,f:"IS",q:1,s:["Proliferation Cycle"],grp:"primitive"},
+  {n:"Firebee",v:"FRB-1E",c:"Light",t:30,f:"IS",q:1,s:["Proliferation Cycle"],grp:"primitive"},
+  {n:"Coyotl",v:"Prime",c:"Medium",t:40,f:"Clan",q:1,s:["Proliferation Cycle"],grp:"primitive",note:"first Clan OmniMech"},
+
+  // --- The cursed one ---
+  {n:"UrbanMech LAM",v:"UM-R60L",c:"Light",t:30,f:"IS",q:1,s:["UrbanMech LAM Salvage Box"],grp:"lam",note:"BattleMech / AirMech / Aerospace modes \u2014 needs Land-Air rules"},
+];
+
+// product groupings (for the "by product" view + verification)
+const products = [
+  {p:"A Game of Armored Combat", type:"Boxed Set", box:true, items:["Awesome AWS-8Q","BattleMaster BLR-1G","Catapult CPLT-C1","Commando COM-2D","Locust LCT-1V","Shadow Hawk SHD-2H","Thunderbolt TDR-5S","Wolverine WVR-6R"], note:"Griffin included as a card only (no mini)"},
+  {p:"Beginner Box, 2nd Edition", type:"Boxed Set", box:true, items:["Griffin GRF-1N","Vindicator VND-1R"], note:"If you also have the original Beginner Box, add a Griffin + Wolverine"},
+  {p:"Essentials (Solaris)", type:"Boxed Set", box:true, items:["Rifleman RFL-3N","Centurion CN9-YLW \u201cYen-Lo-Wang\u201d"]},
+  {p:"Clan Invasion", type:"Boxed Set", box:true, items:["Timber Wolf","Executioner","Nova","Adder","Mongrel (Grendel)"], note:"+ Elemental battle armor"},
+  {p:"Alpha Strike Boxed Set", type:"Boxed Set", box:true, items:["Archer","Atlas","Blackjack","Fire Moth","Locust","Nova","Phoenix Hawk","Pouncer","Timber Wolf","Warhammer","Warhawk","Wasp","Wraith"]},
+  {p:"Mercenaries", type:"Boxed Set", box:true, items:["Devastator","Ostsol","Caesar","Starslayer","Chameleon","Quickdraw","Firefly","Flea"], note:"+ vehicles (Galleon, Maxim, etc.)"},
+  {p:"Aces: Scouring Sands", type:"Boxed Set", box:true, items:["Bane (Kraken)","Thunderbolt IIC","Marauder IIC","Rifleman IIC","+3 Jade Falcon 'Mechs (unconfirmed)"], note:"Jade Falcon 2nd-line / IIC · + 2 Fulcrum hovertanks"},
+
+  {p:"Inner Sphere Command Lance", type:"Force Pack", items:["Marauder MAD-3R","Archer ARC-2R","Valkyrie VLK-QA","Stinger STG-3R"]},
+  {p:"House Kurita Command Lance", type:"Force Pack", items:["Akuma (90t)","Shiro (75t)","Grand Dragon (60t)","Rokurokubi (35t)"]},
+  {p:"House Kurita Ranger Lance", type:"Force Pack", items:["Avatar (70t)","Chimera (40t)","Venom (30t)","Panther (35t)"]},
+  {p:"Somerset Strikers", type:"Force Pack", items:["Axman AXM-2N","Mauler (90t)","Bushwacker (55t)","Hatamoto-Chi (80t)","Wolfhound (35t)"]},
+  {p:"Gray Death Legion Heavy Battle Lance", type:"Force Pack", items:["Regent (75t)","Shadow Hawk","Gargoyle","Catapult (PPC)"]},
+  {p:"Kell Hounds Striker Lance", type:"Force Pack", items:["Wolfhound","Griffin","Crusader","Nightsky"]},
+  {p:"Wolf's Dragoons Assault Star", type:"Force Pack", items:["Annihilator (100t)","Timber Wolf","Rifleman","Archer","Blackjack"]},
+  {p:"Eridani Light Horse Hunter Lance", type:"Force Pack", items:["Sagittaire (95t)","Banshee","Cyclops","Thunderbolt (jumping)"]},
+  {p:"Legendary MechWarriors II", type:"Force Pack", items:["Caesar (Archangel)","Devastator","Charger 3K","Marauder (Red Hunter)","SM5 Tank Destroyer (vehicle)"]},
+  {p:"Legendary MechWarriors III", type:"Force Pack", items:["Bounty Hunter's Marauder","Warhammer WHM-9K","Griffin GRF-2N","Timber Wolf (BH)","Loki Mk II Prime","Marauder II MAD-8K"]},
+  {p:"Clan Heavy Striker Star", type:"Force Pack", items:["Gargoyle","Hellbringer","Mad Dog","Ice Ferret","Viper"]},
+  {p:"Clan Support Star", type:"Force Pack", items:["Night Gyr","Arctic Cheetah","Linebacker","Battle Cobra","Black Lanner"]},
+  {p:"UrbanMech Lance", type:"Force Pack", items:["UrbanMech \u00d74 (UM-R60 + variants)"]},
+  {p:"Proliferation Cycle", type:"Force Pack", items:["Mackie","Battleaxe","Ymir","Coyotl","Firebee","Gladiator","Icarus II"], note:"primitive tech — not standard 3062-legal"},
+  {p:"UrbanMech LAM", type:"Salvage Box", items:["UrbanMech LAM (UM-R60L) — BattleMech / AirMech / Aerospace modes + jump plume"], note:"The meme made real · needs Land-Air 'Mech rules, not standard 3062-legal"},
+];
+
+let state = {q:"", f:"all", c:"all", view:"chassis"};
+
+function matches(m){
+  if(state.f!=="all" && m.f!==state.f) return false;
+  if(state.c!=="all" && m.c!==state.c) return false;
+  if(state.q){
+    const hay = (m.n+" "+(m.v||"")+" "+m.s.join(" ")).toLowerCase();
+    if(!hay.includes(state.q.toLowerCase())) return false;
+  }
+  return true;
+}
+
+function renderStats(){
+  const standard = mechs.filter(m=>!m.grp);
+  const sum = arr => arr.reduce((a,m)=>a+m.q,0);
+  const total = sum(mechs);
+  const is = sum(mechs.filter(m=>m.f==="IS"));
+  const clan = sum(mechs.filter(m=>m.f==="Clan"));
+  const byc = c => sum(standard.filter(m=>m.c===c));
+  const el = document.getElementById('stats');
+  el.innerHTML = `
+    <div class="stat tot"><div class="num">${total}</div><div class="lbl">'Mechs total</div></div>
+    <div class="stat is"><div class="num">${is}</div><div class="lbl">Inner Sphere</div></div>
+    <div class="stat clan"><div class="num">${clan}</div><div class="lbl">Clan</div></div>
+    <div class="stat"><div class="num">${byc('Light')}</div><div class="lbl">Light</div></div>
+    <div class="stat"><div class="num">${byc('Medium')}</div><div class="lbl">Medium</div></div>
+    <div class="stat"><div class="num">${byc('Heavy')}</div><div class="lbl">Heavy</div></div>
+    <div class="stat"><div class="num">${byc('Assault')}</div><div class="lbl">Assault</div></div>`;
+}
+
+const classOrder = {Light:0,Medium:1,Heavy:2,Assault:3};
+function renderChassis(){
+  const rows = mechs.filter(matches).slice().sort((a,b)=>{
+    if(a.f!==b.f) return a.f==="IS"?-1:1;
+    if(classOrder[a.c]!==classOrder[b.c]) return classOrder[a.c]-classOrder[b.c];
+    return a.t-b.t;
+  });
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = rows.map(m=>{
+    const tag = m.grp==='primitive' ? '<span class="tag">primitive</span>'
+              : m.grp==='iic' ? '<span class="tag iic">IIC</span>'
+              : m.grp==='lam' ? '<span class="tag lam">LAM</span>' : '';
+    const note = m.note ? ` <span class="var">· ${m.note}</span>` : '';
+    const tons = m.t ? m.t : '—';
+    return `<tr>
+      <td><span class="name">${m.n}</span>${tag}<br><span class="var">${m.v||''}${note?note:''}</span></td>
+      <td><span class="badge b-${m.c}">${m.c}</span></td>
+      <td class="tons">${tons}</td>
+      <td><span class="badge b-${m.f}">${m.f}</span></td>
+      <td class="qty ${m.q>1?'multi':''}">${m.q}</td>
+      <td class="src">${m.s.join(', ')}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('emptyMsg').classList.toggle('hidden', rows.length>0);
+  const shown = rows.reduce((a,m)=>a+m.q,0);
+  document.getElementById('shownCount').textContent = `Showing ${rows.length} chassis (${shown} minis)`;
+}
+
+function renderProducts(){
+  const view = document.getElementById('productView');
+  view.innerHTML = products.map(p=>{
+    const note = p.note ? `<div class="pnote">${p.note}</div>` : '';
+    return `<div class="pcard ${p.box?'box':''}">
+      <div class="ptype">${p.type}</div>
+      <h3>${p.p}</h3>
+      <div class="mlist">${p.items.map(i=>`<span>${i}</span>`).join('')}</div>
+      ${note}
+    </div>`;
+  }).join('');
+  document.getElementById('shownCount').textContent = `${products.length} products`;
+}
+
+function render(){
+  const chassisOn = state.view==="chassis";
+  document.getElementById('chassisView').classList.toggle('hidden', !chassisOn);
+  document.getElementById('productView').classList.toggle('hidden', chassisOn);
+  if(chassisOn) renderChassis(); else renderProducts();
+}
+
+// wire up controls
+document.getElementById('search').addEventListener('input', e=>{state.q=e.target.value; if(state.view==='chassis') renderChassis();});
+document.querySelectorAll('#factionFilters .chip').forEach(b=>b.addEventListener('click',()=>{
+  state.f=b.dataset.f;
+  document.querySelectorAll('#factionFilters .chip').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); if(state.view==='chassis') renderChassis();
+}));
+document.querySelectorAll('#classFilters .chip[data-c]').forEach(b=>b.addEventListener('click',()=>{
+  state.c=b.dataset.c;
+  document.querySelectorAll('#classFilters .chip[data-c]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); if(state.view==='chassis') renderChassis();
+}));
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{
+  state.view=b.dataset.view;
+  document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); render();
+}));
+
+renderStats();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clan Variants Reference</title>
+<style>
+  :root{
+    --bg:#24273a; --card:#363a4f; --surface:#494d64; --border:#5b6078;
+    --text:#cad3f5; --muted:#a5adcb;
+    --blue:#8aadf4; --green:#a6da95; --red:#ed8796; --yellow:#eed49f;
+    --teal:#8bd5ca; --pink:#f5bde6; --mauve:#c6a0f6; --peach:#f5a97f; --lavender:#b7bdf8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5; padding:28px 18px 64px;}
+  .wrap{max-width:1000px; margin:0 auto;}
+  .nav{font-size:.85rem; margin-bottom:14px;}
+  .nav a{color:var(--blue); text-decoration:none;}
+  h1{font-size:1.6rem; margin:0 0 4px; font-weight:650;}
+  h1 .accent{color:var(--mauve);}
+  .sub{color:var(--muted); font-size:.94rem; margin:0 0 18px;}
+  code,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+
+  .legend{display:flex; flex-wrap:wrap; gap:8px 16px; background:var(--card); border:1px solid var(--border);
+    border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:.83rem;}
+  .legend span{display:flex; align-items:center; gap:6px;}
+  .dot{width:11px; height:11px; border-radius:3px; display:inline-block;}
+  .dot.cheap{background:var(--green);} .dot.trap{background:var(--peach);}
+  .dot.late{background:var(--red);} .dot.appx{background:var(--muted);}
+
+  .controls{background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:14px 16px; margin-bottom:18px; display:flex; flex-direction:column; gap:12px;
+    box-shadow:0 6px 20px -12px rgba(0,0,0,.5);}
+  .search{width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    color:var(--text); padding:11px 14px; font-size:.95rem; transition:box-shadow .18s,border-color .18s;}
+  .search::placeholder{color:var(--muted);}
+  .search:focus{outline:none; border-color:var(--mauve); box-shadow:0 0 0 3px rgba(198,160,246,.18);}
+  .filter-row{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+  .filter-row .lbl{font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-right:2px;}
+  .chip{background:var(--surface); border:1px solid var(--border); color:var(--muted);
+    border-radius:999px; padding:6px 14px; font-size:.85rem; cursor:pointer; transition:all .16s ease;}
+  .chip:hover{color:var(--text); border-color:var(--mauve);}
+  .chip.active{background:var(--mauve); color:var(--bg); border-color:var(--mauve); font-weight:600;}
+  .chip.c-Light.active{background:var(--teal);} .chip.c-Medium.active{background:var(--green);}
+  .chip.c-Heavy.active{background:var(--yellow);} .chip.c-Assault.active{background:var(--peach);}
+  .chip.eraonly.active{background:var(--lavender);}
+
+  .mech{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px 6px;
+    margin-bottom:14px; box-shadow:0 5px 18px -12px rgba(0,0,0,.5);}
+  .mech-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:8px; margin-bottom:2px;}
+  .mech-head h3{margin:0; font-size:1.1rem;}
+  .mech-head .isn{color:var(--muted); font-size:.9rem; font-weight:400;}
+  .mech-head .meta{margin-left:auto; font-size:.78rem; color:var(--muted); font-family:"JetBrains Mono",monospace;}
+  .qtybadge{background:rgba(166,218,149,.16); color:var(--green); border-radius:7px; padding:1px 8px; font-size:.72rem; font-weight:600;}
+  .clsbadge{border-radius:7px; padding:1px 8px; font-size:.72rem; font-weight:600;}
+  .b-Light{background:rgba(139,213,202,.16); color:var(--teal);}
+  .b-Medium{background:rgba(166,218,149,.16); color:var(--green);}
+  .b-Heavy{background:rgba(238,212,159,.16); color:var(--yellow);}
+  .b-Assault{background:rgba(245,169,127,.16); color:var(--peach);}
+  .role{color:var(--lavender); font-size:.8rem; margin:2px 0 8px;}
+  .role .n{color:var(--muted); font-style:italic;}
+
+  table{width:100%; border-collapse:collapse; margin-bottom:6px;}
+  td{padding:5px 8px; border-bottom:1px solid rgba(91,96,120,.32); font-size:.88rem; vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  .cfg{font-family:"JetBrains Mono",monospace; font-weight:600; width:64px; white-space:nowrap;}
+  .bv{font-family:"JetBrains Mono",monospace; text-align:right; width:62px; font-weight:600;}
+  .wpn{color:var(--muted); font-size:.84rem;}
+  .row-cheap .bv{color:var(--green);}
+  .row-trap .cfg{color:var(--peach);}
+  .row-late{opacity:.62;}
+  .row-late .bv{color:var(--red);}
+  .flag{display:inline-block; font-size:.64rem; padding:0 6px; border-radius:5px; margin-left:6px; vertical-align:middle; font-family:-apple-system,sans-serif; font-weight:600;}
+  .flag.cheap{background:rgba(166,218,149,.16); color:var(--green);}
+  .flag.trap{background:rgba(245,169,127,.16); color:var(--peach);}
+  .flag.late{background:rgba(237,135,150,.15); color:var(--red);}
+  .flag.appx{background:rgba(165,173,203,.15); color:var(--muted);}
+
+  .footer{margin-top:24px; color:var(--muted); font-size:.83rem; border-top:1px solid var(--border); padding-top:16px;}
+  .footer b{color:var(--text);}
+  .secondline{background:var(--card); border:1px dashed var(--border); border-radius:12px; padding:14px 16px; margin-bottom:14px;}
+  .secondline h3{margin:0 0 6px; font-size:1rem; color:var(--pink);}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav"><a href="index.html">← Inventory</a><a href="forces.html">Forces →</a></div>
+  <h1>Clan <span class="accent">Variants</span> Reference</h1>
+  <p class="sub">Every config of all 18 owned Clan chassis · Battle Value 2.0 at Regular (4/5), verified against the Master Unit List</p>
+
+  <div class="legend">
+    <span><i class="dot cheap"></i> best value / cheapest useful</span>
+    <span><i class="dot trap"></i> "Prime trap" — overpriced default</span>
+    <span><i class="dot late"></i> post-3062 (Jihad / Dark Age)</span>
+    <span><i class="dot appx"></i> approximate, confirm in MegaMek</span>
+  </div>
+
+  <div class="controls">
+    <input class="search" id="search" type="text" placeholder="Search chassis or weapon…" autocomplete="off">
+    <div class="filter-row" id="classFilters">
+      <span class="lbl">Weight</span>
+      <button class="chip active" data-c="all">All</button>
+      <button class="chip c-Light" data-c="Light">Light</button>
+      <button class="chip c-Medium" data-c="Medium">Medium</button>
+      <button class="chip c-Heavy" data-c="Heavy">Heavy</button>
+      <button class="chip c-Assault" data-c="Assault">Assault</button>
+      <button class="chip eraonly" id="eraBtn" data-era="off" style="margin-left:auto;">Hide post-3062</button>
+    </div>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="secondline" id="secondline">
+    <h3>Aces: Scouring Sands — Jade Falcon second-line</h3>
+    <p style="color:var(--muted); font-size:.86rem; margin:0;">Marauder IIC (85t), Bane / Kraken (100t), Thunderbolt IIC, Rifleman IIC, + 3 unconfirmed. These are standard BattleMechs (not OmniMechs), so each is essentially one fixed loadout rather than a config family — and all are heavy, expensive second-line designs better suited to 2-'Mech Stars than a balanced 6,000 force. BVs not yet pulled; say the word if you want them added.</p>
+  </div>
+
+  <div class="footer">
+    <p><b>How to read this.</b> On most Clan Omnis the <b>Prime is the worst value</b> — the iconic 2-ER-PPC-plus-targeting-computer and all-laser configs cost a fortune in BV for guns they can't keep cool. The green configs do a similar job for far less and are how you fit these into a 6,000 Star. All figures are BV 2.0 at 4/5; multiply by ~1.32 for Veteran (3/4).</p>
+    <p><b>Owned counts</b> reflect your collection (Timber Wolf ×4, Nova ×2, Gargoyle ×2, rest ×1). A couple of values are marked approximate where the MUL line wasn't cleanly captured — verify those in MegaMek when you build.</p>
+  </div>
+</div>
+
+<script>
+// tag: 'cheap' | 'trap' | 'late' | 'appx' | ''
+const mechs = [
+  // ---------- LIGHTS ----------
+  {n:"Fire Moth", isn:"Dasher", c:"Light", t:20, q:1, role:"Harasser", note:"Fastest 'Mech in the game (10/15, MASC to 20). Extreme speed inflates its BV; lightly armed.",
+   cfg:[{c:"Prime", bv:1251, w:"LRM-5s + ER mediums (scout)", tag:"appx"}]},
+  {n:"Pouncer", isn:"", c:"Light", t:30, q:1, role:"Sniper / Skirmisher", note:"A jump-capable Adder. Prime suffers the same 2-PPC heat trap.",
+   cfg:[{c:"Prime", bv:2557, w:"2 ER PPC + targeting computer", tag:"trap"},
+        {c:"A", bv:2081, w:"2 LRM-15 + 4 ER medium (fire support)"},
+        {c:"B", bv:1836, w:"2 ER large + LRM-10 + 2 SRM-4"},
+        {c:"C", bv:1653, w:"UAC/10 + lasers", tag:"cheap"},
+        {c:"D", bv:2246, w:"6 ER medium + TC + 2 Streak SRM-6"},
+        {c:"E", bv:1632, w:"2 ATM-9", tag:"cheap"},
+        {c:"F", bv:1308, w:"anti-infantry (plasma/flamers)", tag:"late"}]},
+  {n:"Arctic Cheetah", isn:"Hankyu", c:"Light", t:30, q:1, role:"Scout / EWAR", note:"Fragile electronic-warfare light; jumpy.",
+   cfg:[{c:"Prime", bv:1334, w:"2 LRM-5 + 2 ER medium + probe/ECM/TAG"},
+        {c:"A", bv:1117, w:"small pulse + 2 Streak SRM-6"},
+        {c:"B", bv:1076, w:"LB 2-X + MPL + ER medium", tag:"cheap"},
+        {c:"C", bv:1840, w:"4 ER medium + 2 MPL (hunter-killer)"},
+        {c:"D", bv:1080, w:"2 LRM-10 (missile boat)", tag:"cheap"},
+        {c:"H", bv:1264, w:"ER large + heavy mediums"}]},
+  {n:"Adder", isn:"Puma", c:"Light", t:35, q:1, role:"Sniper / Fire support", note:"Prime's twin ER PPC + TC is the textbook BV trap; the A is a 35-ton 'Archer'.",
+   cfg:[{c:"Prime", bv:2083, w:"2 ER PPC + targeting computer", tag:"trap"},
+        {c:"A", bv:1437, w:"2 LRM-20 (cold, ranged)", tag:"cheap"},
+        {c:"B", bv:1422, w:"LB 5-X + large pulse + 2 ER medium", tag:"cheap"},
+        {c:"C", bv:1372, w:"2 LRM-15 + Narc"},
+        {c:"D", bv:1255, w:"mixed (cheapest)", tag:"cheap"},
+        {c:"E", bv:1272, w:"mixed"},
+        {c:"H", bv:1453, w:"mixed"}]},
+
+  // ---------- MEDIUMS ----------
+  {n:"Viper", isn:"Dragonfly", c:"Medium", t:40, q:1, role:"Striker", note:"Fast (8/12/8), well-armored, deliberately under-gunned — keeps BV sane.",
+   cfg:[{c:"Prime", bv:1450, w:"SRM-4 + AMS + 2 MPL + 2 MG"},
+        {c:"A", bv:1989, w:"5 ER medium + SRM-6 Artemis"},
+        {c:"B", bv:1830, w:"ER PPC + 2 small pulse + flamer"},
+        {c:"C", bv:1344, w:"anti-infantry (MG/flamer)", tag:"cheap"},
+        {c:"D", bv:1779, w:"LRM-5 + 2 ER medium + Streak SRM-6"},
+        {c:"E", bv:1561, w:"ATM-6 + lasers"},
+        {c:"H", bv:1732, w:"heavy mediums + 2 ER medium"}]},
+  {n:"Battle Cobra", isn:"", c:"Medium", t:40, q:1, role:"Sniper", note:"Slow for a 40-tonner (5/8) but durable; simple pulse-laser platform.",
+   cfg:[{c:"Prime", bv:1487, w:"2 large pulse lasers"},
+        {c:"A", bv:1466, w:"3 medium + 3 medium pulse + SPL", tag:"cheap"},
+        {c:"B", bv:1892, w:"heavier mixed loadout"}]},
+  {n:"Mongrel", isn:"Grendel", c:"Medium", t:45, q:1, role:"Striker", note:"Very fast (7/11/7); most configs are pricey for the weight.",
+   cfg:[{c:"Prime", bv:2290, w:"ER large + mixed short-range"},
+        {c:"A", bv:2031, w:"2 LRM-15 + MPL"},
+        {c:"B", bv:1903, w:"2 MPL + ER medium + UAC/5"},
+        {c:"C", bv:1465, w:"LB 10-X + lasers (cheapest)", tag:"cheap"},
+        {c:"D", bv:2212, w:"close-combat mixed"},
+        {c:"H", bv:1965, w:"heavy large laser + Streak SRM-4"},
+        {c:"T", bv:1936, w:"large pulse + heavy mediums + SRM-6"}]},
+  {n:"Ice Ferret", isn:"Fenris", c:"Medium", t:45, q:1, role:"Striker", note:"Fast cavalry striker; cheap across the board.",
+   cfg:[{c:"Prime", bv:1678, w:"ER large + ER medium"},
+        {c:"A", bv:1323, w:"mixed", tag:"cheap"},
+        {c:"B", bv:1461, w:"mixed"},
+        {c:"C", bv:1211, w:"mixed (cheapest)", tag:"cheap"},
+        {c:"D", bv:1653, w:"mixed"},
+        {c:"E", bv:1483, w:"ATM"},
+        {c:"H", bv:1619, w:"heavy lasers"},
+        {c:"L", bv:1380, w:"light striker"}]},
+  {n:"Nova", isn:"Black Hawk", c:"Medium", t:50, q:2, role:"Brawler", note:"Prime's 12 ER mediums cost as much as a Clan assault and can't be fired without shutdown. The B and D are the value picks.",
+   cfg:[{c:"Prime", bv:2663, w:"12 ER medium lasers (heat bomb)", tag:"trap"},
+        {c:"A", bv:2422, w:"2 ER PPC + 2 MPL + 2 AMS"},
+        {c:"B", bv:1515, w:"UAC/5 + large pulse", tag:"cheap"},
+        {c:"D", bv:1450, w:"LRM-20 + LB 5-X (fire support)", tag:"cheap"},
+        {c:"S", bv:2056, w:"6 medium pulse + 4 MG + probe"},
+        {c:"F", bv:1976, w:"HAG-20 + 3 ER medium"},
+        {c:"G", bv:1822, w:"ProtoMech AC/8 + heavy mediums"},
+        {c:"H", bv:1832, w:"10 heavy mediums (suicide heat)"},
+        {c:"T", bv:1579, w:"12 medium chemical lasers", tag:"cheap"},
+        {c:"E", bv:2078, w:"ATM-12 + 3 ER medium"}]},
+  {n:"Black Lanner", isn:"", c:"Medium", t:55, q:1, role:"Skirmisher", note:"Blazing 7/11 with MASC + ECM; speed-factor inflates BV hard.",
+   cfg:[{c:"Prime", bv:2268, w:"ER large + 2 ER medium + LRM-10 + SRM-6 + ECM"},
+        {c:"A", bv:2308, w:"ER PPC + 2 MPL + probe + ECM + TAG"}]},
+
+  // ---------- HEAVIES ----------
+  {n:"Mad Dog", isn:"Vulture", c:"Heavy", t:60, q:1, role:"Missile boat", note:"Your classic LRM anchor. The Prime is fine; A and C are leaner.",
+   cfg:[{c:"Prime", bv:2351, w:"2 LRM-20 + 4 ER medium"},
+        {c:"A", bv:1923, w:"leaner mixed", tag:"cheap"},
+        {c:"B", bv:2284, w:"mixed"},
+        {c:"C", bv:1892, w:"mixed (cheapest)", tag:"cheap"},
+        {c:"D", bv:2447, w:"heavier mixed"},
+        {c:"E", bv:2031, w:"Jihad-era refit", tag:"late"},
+        {c:"F", bv:2300, w:"mixed"}]},
+  {n:"Hellbringer", isn:"Loki", c:"Heavy", t:65, q:1, role:"Glass cannon", note:"Prime hauls a pile of switched-off electronics for ~2,650; the A drops them for real guns at far less.",
+   cfg:[{c:"Prime", bv:2654, w:"2 ER PPC + TC + ECM + probe + AMS", tag:"trap"},
+        {c:"A", bv:1948, w:"2 ER large + UAC/5 + LRM-20 + Narc", tag:"cheap"},
+        {c:"B", bv:1592, w:"Gauss + LB 5-X + 2 SRM-6 Artemis", tag:"cheap"},
+        {c:"H", bv:1952, w:"heavy lasers + UAC/5"},
+        {c:"J", bv:2415, w:"jump-capable scout"}]},
+  {n:"Linebacker", isn:"", c:"Heavy", t:65, q:1, role:"Skirmisher", note:"Fast 6/9 heavy. Prime is the pricey default; E/D are the budget chassis.",
+   cfg:[{c:"Prime", bv:2390, w:"fast mixed energy/missile"},
+        {c:"A", bv:2264, w:"2 ER large + LRM-5 + LRM-15 + 2 ER medium"},
+        {c:"B", bv:2048, w:"mixed"},
+        {c:"C", bv:2075, w:"UAC/5 + ER large"},
+        {c:"D", bv:2039, w:"mixed", tag:"cheap"},
+        {c:"E", bv:1846, w:"cheapest", tag:"cheap"},
+        {c:"H", bv:2097, w:"Civil-War refit", tag:"late"}]},
+  {n:"Night Gyr", isn:"", c:"Heavy", t:75, q:1, role:"Sniper", note:"Premium 75-ton heavy with 4 fixed jump jets — expensive across the board; 2-'Mech-Star material.",
+   cfg:[{c:"Prime", bv:2700, w:"2 ER PPC + UAC/10 + 3 MPL", tag:"appx"},
+        {c:"A", bv:2680, w:"UAC-20 + 2 Streak SRM-6 + LPL + 3 MPL"},
+        {c:"B", bv:2140, w:"2 Gauss + 2 LB 2-X", tag:"cheap"},
+        {c:"C", bv:2468, w:"3 UAC/2 + 2 ER large + TC"},
+        {c:"D", bv:2889, w:"4 LRM-20 Artemis"},
+        {c:"E", bv:2717, w:"2 LPL + 6 MPL + ATM-6"},
+        {c:"F", bv:2958, w:"HAG-20 + HAG-30 + ECM"}]},
+  {n:"Timber Wolf", isn:"Mad Cat", c:"Heavy", t:75, q:4, role:"Workhorse", note:"You own four. Prime/A are 1-v-1 terrors but pricey; the B (Gauss + Artemis LRM) is the budget Mad Cat that fits a 6,000 Star.",
+   cfg:[{c:"Prime", bv:2741, w:"2 LRM-20 + 2 ER large + 2 ER medium + MPL"},
+        {c:"A", bv:2854, w:"2 ER PPC + 3 MPL + Streak SRM-6"},
+        {c:"B", bv:2224, w:"Gauss + LRM-10 + pulse + SRM-4 Artemis", tag:"cheap"},
+        {c:"C", bv:2400, w:"2 ER large + UAC/5 + 2 LRM-15", tag:"appx"},
+        {c:"D", bv:2682, w:"2 ER PPC + 4 Streak SRM-6 (2 rear)"},
+        {c:"S", bv:2737, w:"5 jump jets (urban Prime)", tag:"appx"}]},
+
+  // ---------- ASSAULTS ----------
+  {n:"Gargoyle", isn:"Man O' War", c:"Assault", t:80, q:2, role:"Skirmisher", note:"Your best-kept secret: an 80-ton assault for 1,537. You own two, and 'under-gunned' here means 'cheap and durable'.",
+   cfg:[{c:"Prime", bv:1537, w:"2 LB 5-X + 2 SRM-6 + ER small", tag:"cheap"},
+        {c:"B", bv:1843, w:"mixed", tag:"cheap"},
+        {c:"G", bv:2156, w:"mixed"},
+        {c:"M", bv:2182, w:"mixed"},
+        {c:"H", bv:2183, w:"mixed"},
+        {c:"E", bv:2257, w:"mixed"},
+        {c:"C", bv:2417, w:"mixed"},
+        {c:"D", bv:2499, w:"mixed"},
+        {c:"A", bv:2689, w:"mixed (priciest)"}]},
+  {n:"Warhawk", isn:"Masakari", c:"Assault", t:85, q:1, role:"Fire support", note:"Prime's four ER PPCs generate 60 heat and sink 40 — too much gun. Alt configs run ~2,320–2,940.",
+   cfg:[{c:"Prime", bv:3194, w:"4 ER PPC + LRM-10 + TC", tag:"trap"},
+        {c:"C", bv:2775, w:"2 ER PPC + LRM-10/20 + UAC/2"},
+        {c:"B", bv:2320, w:"Gauss + lasers + SRM", tag:"cheap"},
+        {c:"E", bv:2909, w:"LBX/20 + heavy lasers (brawler)"}]},
+  {n:"Executioner", isn:"Gladiator", c:"Assault", t:95, q:1, role:"Fast sniper", note:"95 tons with MASC + jump, but small pod space and MASC tax make every config dear.",
+   cfg:[{c:"Prime", bv:2749, w:"Gauss + 2 ER large + 2 MG"},
+        {c:"A", bv:3112, w:"3 large pulse + 4 ER medium"},
+        {c:"B", bv:2940, w:"UAC-20 + ER PPC + ER medium"},
+        {c:"J", bv:2891, w:"HAG-40 + 3 SRM-6", tag:"late"}]}
+];
+
+const order = {Light:0,Medium:1,Heavy:2,Assault:3};
+let state = {q:"", c:"all", eraOnly:false};
+
+function isLate(tag){ return tag==='late'; }
+
+function render(){
+  const root = document.getElementById('list');
+  const items = mechs.filter(m=>{
+    if(state.c!=="all" && m.c!==state.c) return false;
+    if(state.q){
+      const hay = (m.n+" "+m.isn+" "+m.role+" "+m.cfg.map(x=>x.w).join(" ")).toLowerCase();
+      if(!hay.includes(state.q.toLowerCase())) return false;
+    }
+    return true;
+  }).sort((a,b)=> order[a.c]-order[b.c] || a.t-b.t);
+
+  root.innerHTML = items.map(m=>{
+    const rows = m.cfg.filter(cf=> !(state.eraOnly && isLate(cf.tag))).map(cf=>{
+      const cls = cf.tag==='cheap'?'row-cheap':cf.tag==='trap'?'row-trap':cf.tag==='late'?'row-late':'';
+      const flag = cf.tag==='cheap'?'<span class="flag cheap">value</span>'
+                 : cf.tag==='trap'?'<span class="flag trap">trap</span>'
+                 : cf.tag==='late'?'<span class="flag late">post-3062</span>'
+                 : cf.tag==='appx'?'<span class="flag appx">approx</span>':'';
+      return `<tr class="${cls}"><td class="cfg">${cf.c}</td><td class="bv">${cf.bv.toLocaleString()}</td><td class="wpn">${cf.w}${flag}</td></tr>`;
+    }).join('');
+    return `<div class="mech">
+      <div class="mech-head">
+        <h3>${m.n} ${m.isn?`<span class="isn">(${m.isn})</span>`:''}</h3>
+        <span class="meta"><span class="clsbadge b-${m.c}">${m.c}</span> · ${m.t}t · <span class="qtybadge">×${m.q}</span></span>
+      </div>
+      <div class="role">${m.role} <span class="n">— ${m.note}</span></div>
+      <table>${rows}</table>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('search').addEventListener('input', e=>{state.q=e.target.value; render();});
+document.querySelectorAll('#classFilters .chip[data-c]').forEach(b=>b.addEventListener('click',()=>{
+  state.c=b.dataset.c;
+  document.querySelectorAll('#classFilters .chip[data-c]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); render();
+}));
+const eraBtn = document.getElementById('eraBtn');
+eraBtn.addEventListener('click',()=>{
+  state.eraOnly=!state.eraOnly;
+  eraBtn.classList.toggle('active', state.eraOnly);
+  eraBtn.textContent = state.eraOnly ? 'Showing ≤3062 only' : 'Hide post-3062';
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
