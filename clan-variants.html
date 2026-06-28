@@ -89,13 +89,12 @@
 <div class="wrap">
   <div class="nav"><a href="index.html">← Inventory</a> &middot; <a href="is-variants.html">IS Variants</a> &middot; <a href="forces.html">Forces →</a></div>
   <h1>Clan <span class="accent">Variants</span> Reference</h1>
-  <p class="sub">Every config of all 18 owned Clan chassis · Battle Value 2.0 at Regular (4/5), verified against the Master Unit List</p>
+  <p class="sub">Every config of all 18 owned Clan chassis · Battle Value 2.0 at Regular (4/5), verified against the Master Unit List and the mordel.net canon list</p>
 
   <div class="legend">
     <span><i class="dot cheap"></i> best value / cheapest useful</span>
     <span><i class="dot trap"></i> "Prime trap" — overpriced default</span>
     <span><i class="dot late"></i> post-3062 (Jihad / Dark Age)</span>
-    <span><i class="dot appx"></i> approximate, confirm in MegaMek</span>
   </div>
 
   <div class="controls">
@@ -120,7 +119,7 @@
 
   <div class="footer">
     <p><b>How to read this.</b> On most Clan Omnis the <b>Prime is the worst value</b> — the iconic 2-ER-PPC-plus-targeting-computer and all-laser configs cost a fortune in BV for guns they can't keep cool. The green configs do a similar job for far less and are how you fit these into a 6,000 Star. All figures are BV 2.0 at 4/5; multiply by ~1.32 for Veteran (3/4).</p>
-    <p><b>Owned counts</b> reflect your collection (Timber Wolf ×4, Nova ×2, Gargoyle ×2, rest ×1). A couple of values are marked approximate where the MUL line wasn't cleanly captured — verify those in MegaMek when you build.</p>
+    <p><b>Owned counts</b> reflect your collection (Timber Wolf ×4, Nova ×2, Gargoyle ×2, rest ×1). All BVs are verified against the canon designs list (designer = Catalyst Game Labs) on mordel.net.</p>
   </div>
 </div>
 
@@ -129,7 +128,7 @@
 const mechs = [
   // ---------- LIGHTS ----------
   {n:"Fire Moth", isn:"Dasher", c:"Light", t:20, q:1, role:"Harasser", note:"Fastest 'Mech in the game (10/15, MASC to 20). Extreme speed inflates its BV; lightly armed.",
-   cfg:[{c:"Prime", bv:1251, w:"LRM-5s + ER mediums (scout)", tag:"appx"}]},
+   cfg:[{c:"Prime", bv:1251, w:"LRM-5s + ER mediums (scout)"}]},
   {n:"Pouncer", isn:"", c:"Light", t:30, q:1, role:"Sniper / Skirmisher", note:"A jump-capable Adder. Prime suffers the same 2-PPC heat trap.",
    cfg:[{c:"Prime", bv:2557, w:"2 ER PPC + targeting computer", tag:"trap"},
         {c:"A", bv:2081, w:"2 LRM-15 + 4 ER medium (fire support)"},
@@ -187,7 +186,7 @@ const mechs = [
   {n:"Nova", isn:"Black Hawk", c:"Medium", t:50, q:2, role:"Brawler", note:"Prime's 12 ER mediums cost as much as a Clan assault and can't be fired without shutdown. The B and D are the value picks.",
    cfg:[{c:"Prime", bv:2663, w:"12 ER medium lasers (heat bomb)", tag:"trap"},
         {c:"A", bv:2422, w:"2 ER PPC + 2 MPL + 2 AMS"},
-        {c:"B", bv:1515, w:"UAC/5 + large pulse", tag:"cheap"},
+        {c:"B", bv:1543, w:"UAC/5 + large pulse", tag:"cheap"},
         {c:"D", bv:1450, w:"LRM-20 + LB 5-X (fire support)", tag:"cheap"},
         {c:"S", bv:2056, w:"6 medium pulse + 4 MG + probe"},
         {c:"F", bv:1976, w:"HAG-20 + 3 ER medium"},
@@ -223,7 +222,7 @@ const mechs = [
         {c:"E", bv:1846, w:"cheapest", tag:"cheap"},
         {c:"H", bv:2097, w:"Civil-War refit", tag:"late"}]},
   {n:"Night Gyr", isn:"", c:"Heavy", t:75, q:1, role:"Sniper", note:"Premium 75-ton heavy with 4 fixed jump jets — expensive across the board; 2-'Mech-Star material.",
-   cfg:[{c:"Prime", bv:2700, w:"2 ER PPC + UAC/10 + 3 MPL", tag:"appx"},
+   cfg:[{c:"Prime", bv:2830, w:"2 ER PPC + UAC/10 + 3 MPL"},
         {c:"A", bv:2680, w:"UAC-20 + 2 Streak SRM-6 + LPL + 3 MPL"},
         {c:"B", bv:2140, w:"2 Gauss + 2 LB 2-X", tag:"cheap"},
         {c:"C", bv:2468, w:"3 UAC/2 + 2 ER large + TC"},
@@ -231,12 +230,12 @@ const mechs = [
         {c:"E", bv:2717, w:"2 LPL + 6 MPL + ATM-6"},
         {c:"F", bv:2958, w:"HAG-20 + HAG-30 + ECM"}]},
   {n:"Timber Wolf", isn:"Mad Cat", c:"Heavy", t:75, q:4, role:"Workhorse", note:"You own four. Prime/A are 1-v-1 terrors but pricey; the B (Gauss + Artemis LRM) is the budget Mad Cat that fits a 6,000 Star.",
-   cfg:[{c:"Prime", bv:2741, w:"2 LRM-20 + 2 ER large + 2 ER medium + MPL"},
+   cfg:[{c:"Prime", bv:2737, w:"2 LRM-20 + 2 ER large + 2 ER medium + MPL"},
         {c:"A", bv:2854, w:"2 ER PPC + 3 MPL + Streak SRM-6"},
         {c:"B", bv:2224, w:"Gauss + LRM-10 + pulse + SRM-4 Artemis", tag:"cheap"},
-        {c:"C", bv:2400, w:"2 ER large + UAC/5 + 2 LRM-15", tag:"appx"},
+        {c:"C", bv:2500, w:"2 ER large + UAC/5 + 2 LRM-15"},
         {c:"D", bv:2682, w:"2 ER PPC + 4 Streak SRM-6 (2 rear)"},
-        {c:"S", bv:2737, w:"5 jump jets (urban Prime)", tag:"appx"}]},
+        {c:"S", bv:2462, w:"5 jump jets (urban Prime)"}]},
 
   // ---------- ASSAULTS ----------
   {n:"Gargoyle", isn:"Man O' War", c:"Assault", t:80, q:2, role:"Skirmisher", note:"Your best-kept secret: an 80-ton assault for 1,537. You own two, and 'under-gunned' here means 'cheap and durable'.",
@@ -246,14 +245,14 @@ const mechs = [
         {c:"M", bv:2182, w:"mixed"},
         {c:"H", bv:2183, w:"mixed"},
         {c:"E", bv:2257, w:"mixed"},
-        {c:"C", bv:2417, w:"mixed"},
+        {c:"C", bv:2437, w:"mixed"},
         {c:"D", bv:2499, w:"mixed"},
         {c:"A", bv:2689, w:"mixed (priciest)"}]},
   {n:"Warhawk", isn:"Masakari", c:"Assault", t:85, q:1, role:"Fire support", note:"Prime's four ER PPCs generate 60 heat and sink 40 — too much gun. Alt configs run ~2,320–2,940.",
    cfg:[{c:"Prime", bv:3194, w:"4 ER PPC + LRM-10 + TC", tag:"trap"},
-        {c:"C", bv:2775, w:"2 ER PPC + LRM-10/20 + UAC/2"},
+        {c:"C", bv:2998, w:"2 ER PPC + LRM-10/20 + UAC/2"},
         {c:"B", bv:2320, w:"Gauss + lasers + SRM", tag:"cheap"},
-        {c:"E", bv:2909, w:"LBX/20 + heavy lasers (brawler)"}]},
+        {c:"E", bv:2895, w:"LBX/20 + heavy lasers (brawler)"}]},
   {n:"Executioner", isn:"Gladiator", c:"Assault", t:95, q:1, role:"Fast sniper", note:"95 tons with MASC + jump, but small pod space and MASC tax make every config dear.",
    cfg:[{c:"Prime", bv:2749, w:"Gauss + 2 ER large + 2 MG"},
         {c:"A", bv:3112, w:"3 large pulse + 4 ER medium"},
