@@ -1,2 +1,2 @@
-# Claude Code local (per-user) settings — not part of the site
-.claude/settings.local.json
+# Claude Code local tooling (per-user settings, preview launch config) — not part of the site
+.claude/
