@@ -249,7 +249,7 @@
 
   <div class="footer">
     <p><b>Notes.</b> Tonnages are standard; variant codes are the common/default version (any chassis can run other record sheets on the same mini). Quantities count physical minis across all sources, so several chassis you own more than one of.</p>
-    <p><span class="tag">primitive</span> The Proliferation Cycle seven use primitive tech (Interstellar Operations: Alternate Eras) — not standard 3062-legal. <span class="tag iic">IIC / 2nd-line</span> The Aces: Scouring Sands Clan 'Mechs are Jade Falcon second-line / IIC designs; 3 of its 7 'Mechs aren't yet confirmed by name.</p>
+    <p><span class="tag">primitive</span> The Proliferation Cycle seven use primitive tech (Interstellar Operations: Alternate Eras) — not standard 3062-legal. <span class="tag iic">IIC / 2nd-line</span> The Aces: Scouring Sands Clan 'Mechs are Jade Falcon second-line / IIC designs (Locust IIC, Howler, Rifleman C, Summoner, Thunderbolt IIC, Bane, Marauder IIC) — all confirmed.</p>
   </div>
 </div>
 
@@ -267,7 +267,7 @@ const mechs = [
   {n:"Venom",v:"SDR-9V",c:"Light",t:30,f:"IS",q:1,s:["Kurita Ranger Lance"]},
   {n:"Valkyrie",v:"VLK-QA",c:"Light",t:30,f:"IS",q:1,s:["IS Command Lance"]},
   {n:"Panther",v:"PNT-9R (DC)",c:"Light",t:35,f:"IS",q:1,s:["Kurita Ranger Lance"]},
-  {n:"Wolfhound",v:"WLF-1",c:"Light",t:35,f:"IS",q:2,s:["Kell Hounds","Somerset Strikers"]},
+  {n:"Wolfhound",v:"WLF-1",c:"Light",t:35,f:"IS",q:3,s:["Kell Hounds","Somerset Strikers","Individual"]},
   {n:"Rokurokubi",v:"RKK-1",c:"Light",t:35,f:"IS",q:1,s:["Kurita Command Lance"]},
   {n:"Chimera",v:"CMA-1K",c:"Medium",t:40,f:"IS",q:1,s:["Kurita Ranger Lance"]},
   {n:"Phoenix Hawk",v:"PXH-1",c:"Medium",t:45,f:"IS",q:1,s:["Alpha Strike box"]},
@@ -329,15 +329,17 @@ const mechs = [
   {n:"Night Gyr",v:"Prime",c:"Heavy",t:75,f:"Clan",q:1,s:["Clan Support Star"]},
   {n:"Timber Wolf",v:"(Mad Cat) Prime",c:"Heavy",t:75,f:"Clan",q:4,s:["Clan Invasion","Alpha Strike box","Wolf's Dragoons","Legendary MW III"]},
   {n:"Gargoyle",v:"(Man O'War) Prime",c:"Assault",t:80,f:"Clan",q:2,s:["Clan Heavy Striker Star","Gray Death Legion"]},
-  {n:"Warhawk",v:"(Masakari) Prime",c:"Assault",t:85,f:"Clan",q:1,s:["Alpha Strike box"]},
+  {n:"Warhawk",v:"(Masakari) Prime",c:"Assault",t:85,f:"Clan",q:2,s:["Alpha Strike box","Individual"]},
   {n:"Executioner",v:"(Gladiator) Prime",c:"Assault",t:95,f:"Clan",q:1,s:["Clan Invasion"]},
 
   // --- Clan IIC / 2nd-line (Aces: Scouring Sands, Jade Falcon) ---
-  {n:"Thunderbolt IIC",v:"",c:"Heavy",t:65,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
-  {n:"Rifleman IIC",v:"",c:"Heavy",t:65,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
-  {n:"Marauder IIC",v:"",c:"Assault",t:85,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
+  {n:"Locust IIC",v:"4",c:"Light",t:25,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
+  {n:"Howler",v:"(Baboon) 6",c:"Light",t:20,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
+  {n:"Rifleman C",v:"2",c:"Medium",t:60,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
+  {n:"Summoner",v:"(Thor) H",c:"Heavy",t:70,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
+  {n:"Thunderbolt IIC",v:"",c:"Heavy",t:70,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
   {n:"Bane",v:"(Kraken) 3",c:"Assault",t:100,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
-  {n:"Jade Falcon 'Mechs (unconfirmed)",v:"3 more",c:"Heavy",t:0,f:"Clan",q:3,s:["Aces: Scouring Sands"],grp:"iic",note:"names not yet confirmed"},
+  {n:"Marauder IIC",v:"6",c:"Assault",t:85,f:"Clan",q:1,s:["Aces: Scouring Sands"],grp:"iic"},
 
   // --- Primitive (Proliferation Cycle) ---
   {n:"Mackie",v:"MSK-5S",c:"Assault",t:100,f:"IS",q:1,s:["Proliferation Cycle"],grp:"primitive"},
@@ -360,7 +362,7 @@ const products = [
   {p:"Clan Invasion", type:"Boxed Set", box:true, items:["Timber Wolf","Executioner","Nova","Adder","Mongrel (Grendel)"], note:"+ Elemental battle armor"},
   {p:"Alpha Strike Boxed Set", type:"Boxed Set", box:true, items:["Archer","Atlas","Blackjack","Fire Moth","Locust","Nova","Phoenix Hawk","Pouncer","Timber Wolf","Warhammer","Warhawk","Wasp","Wraith"]},
   {p:"Mercenaries", type:"Boxed Set", box:true, items:["Devastator","Ostsol","Caesar","Starslayer","Chameleon","Quickdraw","Firefly","Flea"], note:"+ vehicles (Galleon, Maxim, etc.)"},
-  {p:"Aces: Scouring Sands", type:"Boxed Set", box:true, items:["Bane (Kraken)","Thunderbolt IIC","Marauder IIC","Rifleman IIC","+3 Jade Falcon 'Mechs (unconfirmed)"], note:"Jade Falcon 2nd-line / IIC · + 2 Fulcrum hovertanks"},
+  {p:"Aces: Scouring Sands", type:"Boxed Set", box:true, items:["Locust IIC 4","Howler 6","Rifleman C 2","Summoner H","Thunderbolt IIC","Bane (Kraken) 3","Marauder IIC 6"], note:"Jade Falcon 2nd-line / IIC · + 2 Fulcrum hovertanks"},
 
   {p:"Inner Sphere Command Lance", type:"Force Pack", items:["Marauder MAD-3R","Archer ARC-2R","Valkyrie VLK-QA","Stinger STG-3R"]},
   {p:"House Kurita Command Lance", type:"Force Pack", items:["Akuma (90t)","Shiro (75t)","Grand Dragon (60t)","Rokurokubi (35t)"]},
@@ -393,6 +395,11 @@ const paintDefaults = {
   "Awesome§AWS-8Q": [2],
   "Axman§AXM-2N": [1],
   "Bane§(Kraken) 3": [2],
+  "Locust IIC§4": [2],
+  "Howler§(Baboon) 6": [2],
+  "Rifleman C§2": [2],
+  "Summoner§(Thor) H": [2],
+  "Marauder IIC§6": [2],
   "Banshee§BNC-3S": [2],
   "Battle Cobra§Prime": [2],
   "BattleMaster§BLR-1G": [1],
@@ -413,12 +420,10 @@ const paintDefaults = {
   "Hatamoto-Chi§HTM-27T": [1],
   "Hellbringer§(Loki) Prime": [2],
   "Ice Ferret§(Fenris) Prime": [2],
-  "Jade Falcon 'Mechs (unconfirmed)§3 more": [2,2,2],
   "Linebacker§Prime": [2],
   "Locust§LCT-1V": [1,0],
   "Loki Mk II§Prime": [1],
   "Mad Dog§(Vulture) Prime": [2],
-  "Marauder IIC§": [2],
   "Marauder II§MAD-8K": [1],
   "Marauder§MAD-3R": [1,2,2],
   "Mauler§MAL-1R": [1],
@@ -429,7 +434,6 @@ const paintDefaults = {
   "Phoenix Hawk§PXH-1": [1],
   "Quickdraw§QKD-4G": [1],
   "Regent§RGT-1A": [2],
-  "Rifleman IIC§": [2],
   "Rifleman§RFL-3N": [0,2],
   "Rokurokubi§RKK-1": [1],
   "Shadow Hawk§SHD-2H": [0,2],
