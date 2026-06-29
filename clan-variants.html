@@ -136,138 +136,1206 @@
 <script>
 // tag: 'cheap' | 'trap' | 'late' | 'appx' | ''
 const mechs = [
-  // ---------- LIGHTS ----------
-  {n:"Fire Moth", isn:"Dasher", c:"Light", t:20, q:1, role:"Harasser", note:"Fastest 'Mech in the game (10/15, MASC to 20). Extreme speed inflates its BV; lightly armed.",
-   cfg:[{c:"Prime", bv:1251, w:"LRM-5s + ER mediums (scout)"}]},
-  {n:"Pouncer", isn:"", c:"Light", t:30, q:1, role:"Sniper / Skirmisher", note:"A jump-capable Adder. Prime suffers the same 2-PPC heat trap.",
-   cfg:[{c:"Prime", bv:2557, w:"2 ER PPC + targeting computer", tag:"trap"},
-        {c:"A", bv:2081, w:"2 LRM-15 + 4 ER medium (fire support)"},
-        {c:"B", bv:1836, w:"2 ER large + LRM-10 + 2 SRM-4"},
-        {c:"C", bv:1653, w:"UAC/10 + lasers", tag:"cheap"},
-        {c:"D", bv:2246, w:"6 ER medium + TC + 2 Streak SRM-6"},
-        {c:"E", bv:1632, w:"2 ATM-9", tag:"cheap"},
-        {c:"F", bv:1308, w:"anti-infantry (plasma/flamers)", tag:"late"}]},
-  {n:"Arctic Cheetah", isn:"Hankyu", c:"Light", t:30, q:1, role:"Scout / EWAR", note:"Fragile electronic-warfare light; jumpy.",
-   cfg:[{c:"Prime", bv:1334, w:"2 LRM-5 + 2 ER medium + probe/ECM/TAG"},
-        {c:"A", bv:1117, w:"small pulse + 2 Streak SRM-6"},
-        {c:"B", bv:1076, w:"LB 2-X + MPL + ER medium", tag:"cheap"},
-        {c:"C", bv:1840, w:"4 ER medium + 2 MPL (hunter-killer)"},
-        {c:"D", bv:1080, w:"2 LRM-10 (missile boat)", tag:"cheap"},
-        {c:"H", bv:1264, w:"ER large + heavy mediums"}]},
-  {n:"Adder", isn:"Puma", c:"Light", t:35, q:1, role:"Sniper / Fire support", note:"Prime's twin ER PPC + TC is the textbook BV trap; the A is a 35-ton 'Archer'.",
-   cfg:[{c:"Prime", bv:2083, w:"2 ER PPC + targeting computer", tag:"trap"},
-        {c:"A", bv:1437, w:"2 LRM-20 (cold, ranged)", tag:"cheap"},
-        {c:"B", bv:1422, w:"LB 5-X + large pulse + 2 ER medium", tag:"cheap"},
-        {c:"C", bv:1372, w:"2 LRM-15 + Narc"},
-        {c:"D", bv:1255, w:"mixed (cheapest)", tag:"cheap"},
-        {c:"E", bv:1272, w:"mixed"},
-        {c:"H", bv:1453, w:"mixed"}]},
-
-  // ---------- MEDIUMS ----------
-  {n:"Viper", isn:"Dragonfly", c:"Medium", t:40, q:1, role:"Striker", note:"Fast (8/12/8), well-armored, deliberately under-gunned — keeps BV sane.",
-   cfg:[{c:"Prime", bv:1450, w:"SRM-4 + AMS + 2 MPL + 2 MG"},
-        {c:"A", bv:1989, w:"5 ER medium + SRM-6 Artemis"},
-        {c:"B", bv:1830, w:"ER PPC + 2 small pulse + flamer"},
-        {c:"C", bv:1344, w:"anti-infantry (MG/flamer)", tag:"cheap"},
-        {c:"D", bv:1779, w:"LRM-5 + 2 ER medium + Streak SRM-6"},
-        {c:"E", bv:1561, w:"ATM-6 + lasers"},
-        {c:"H", bv:1732, w:"heavy mediums + 2 ER medium"}]},
-  {n:"Battle Cobra", isn:"", c:"Medium", t:40, q:1, role:"Sniper", note:"Slow for a 40-tonner (5/8) but durable; simple pulse-laser platform.",
-   cfg:[{c:"Prime", bv:1487, w:"2 large pulse lasers"},
-        {c:"A", bv:1466, w:"3 medium + 3 medium pulse + SPL", tag:"cheap"},
-        {c:"B", bv:1892, w:"heavier mixed loadout"}]},
-  {n:"Mongrel", isn:"Grendel", c:"Medium", t:45, q:1, role:"Striker", note:"Very fast (7/11/7); most configs are pricey for the weight.",
-   cfg:[{c:"Prime", bv:2290, w:"ER large + mixed short-range"},
-        {c:"A", bv:2031, w:"2 LRM-15 + MPL"},
-        {c:"B", bv:1903, w:"2 MPL + ER medium + UAC/5"},
-        {c:"C", bv:1465, w:"LB 10-X + lasers (cheapest)", tag:"cheap"},
-        {c:"D", bv:2212, w:"close-combat mixed"},
-        {c:"H", bv:1965, w:"heavy large laser + Streak SRM-4"},
-        {c:"T", bv:1936, w:"large pulse + heavy mediums + SRM-6"}]},
-  {n:"Ice Ferret", isn:"Fenris", c:"Medium", t:45, q:1, role:"Striker", note:"Fast cavalry striker; cheap across the board.",
-   cfg:[{c:"Prime", bv:1678, w:"ER large + ER medium"},
-        {c:"A", bv:1323, w:"mixed", tag:"cheap"},
-        {c:"B", bv:1461, w:"mixed"},
-        {c:"C", bv:1211, w:"mixed (cheapest)", tag:"cheap"},
-        {c:"D", bv:1653, w:"mixed"},
-        {c:"E", bv:1483, w:"ATM"},
-        {c:"H", bv:1619, w:"heavy lasers"},
-        {c:"L", bv:1380, w:"light striker"}]},
-  {n:"Nova", isn:"Black Hawk", c:"Medium", t:50, q:2, role:"Brawler", note:"Prime's 12 ER mediums cost as much as a Clan assault and can't be fired without shutdown. The B and D are the value picks.",
-   cfg:[{c:"Prime", bv:2663, w:"12 ER medium lasers (heat bomb)", tag:"trap"},
-        {c:"A", bv:2422, w:"2 ER PPC + 2 MPL + 2 AMS"},
-        {c:"B", bv:1543, w:"UAC/5 + large pulse", tag:"cheap"},
-        {c:"D", bv:1450, w:"LRM-20 + LB 5-X (fire support)", tag:"cheap"},
-        {c:"S", bv:2056, w:"6 medium pulse + 4 MG + probe"},
-        {c:"F", bv:1976, w:"HAG-20 + 3 ER medium"},
-        {c:"G", bv:1822, w:"ProtoMech AC/8 + heavy mediums"},
-        {c:"H", bv:1832, w:"10 heavy mediums (suicide heat)"},
-        {c:"T", bv:1579, w:"12 medium chemical lasers", tag:"cheap"},
-        {c:"E", bv:2078, w:"ATM-12 + 3 ER medium"}]},
-  {n:"Black Lanner", isn:"", c:"Medium", t:55, q:1, role:"Skirmisher", note:"Blazing 7/11 with MASC + ECM; speed-factor inflates BV hard.",
-   cfg:[{c:"Prime", bv:2268, w:"ER large + 2 ER medium + LRM-10 + SRM-6 + ECM"},
-        {c:"A", bv:2308, w:"ER PPC + 2 MPL + probe + ECM + TAG"}]},
-
-  // ---------- HEAVIES ----------
-  {n:"Mad Dog", isn:"Vulture", c:"Heavy", t:60, q:1, role:"Missile boat", note:"Your classic LRM anchor. The Prime is fine; A and C are leaner.",
-   cfg:[{c:"Prime", bv:2351, w:"2 LRM-20 + 4 ER medium"},
-        {c:"A", bv:1923, w:"leaner mixed", tag:"cheap"},
-        {c:"B", bv:2284, w:"mixed"},
-        {c:"C", bv:1892, w:"mixed (cheapest)", tag:"cheap"},
-        {c:"D", bv:2447, w:"heavier mixed"},
-        {c:"E", bv:2031, w:"Jihad-era refit", tag:"late"},
-        {c:"F", bv:2300, w:"mixed"}]},
-  {n:"Hellbringer", isn:"Loki", c:"Heavy", t:65, q:1, role:"Glass cannon", note:"Prime hauls a pile of switched-off electronics for ~2,650; the A drops them for real guns at far less.",
-   cfg:[{c:"Prime", bv:2654, w:"2 ER PPC + TC + ECM + probe + AMS", tag:"trap"},
-        {c:"A", bv:1948, w:"2 ER large + UAC/5 + LRM-20 + Narc", tag:"cheap"},
-        {c:"B", bv:1592, w:"Gauss + LB 5-X + 2 SRM-6 Artemis", tag:"cheap"},
-        {c:"H", bv:1952, w:"heavy lasers + UAC/5"},
-        {c:"J", bv:2415, w:"jump-capable scout"}]},
-  {n:"Linebacker", isn:"", c:"Heavy", t:65, q:1, role:"Skirmisher", note:"Fast 6/9 heavy. Prime is the pricey default; E/D are the budget chassis.",
-   cfg:[{c:"Prime", bv:2390, w:"fast mixed energy/missile"},
-        {c:"A", bv:2264, w:"2 ER large + LRM-5 + LRM-15 + 2 ER medium"},
-        {c:"B", bv:2048, w:"mixed"},
-        {c:"C", bv:2075, w:"UAC/5 + ER large"},
-        {c:"D", bv:2039, w:"mixed", tag:"cheap"},
-        {c:"E", bv:1846, w:"cheapest", tag:"cheap"},
-        {c:"H", bv:2097, w:"Civil-War refit", tag:"late"}]},
-  {n:"Night Gyr", isn:"", c:"Heavy", t:75, q:1, role:"Sniper", note:"Premium 75-ton heavy with 4 fixed jump jets — expensive across the board; 2-'Mech-Star material.",
-   cfg:[{c:"Prime", bv:2830, w:"2 ER PPC + UAC/10 + 3 MPL"},
-        {c:"A", bv:2680, w:"UAC-20 + 2 Streak SRM-6 + LPL + 3 MPL"},
-        {c:"B", bv:2140, w:"2 Gauss + 2 LB 2-X", tag:"cheap"},
-        {c:"C", bv:2468, w:"3 UAC/2 + 2 ER large + TC"},
-        {c:"D", bv:2889, w:"4 LRM-20 Artemis"},
-        {c:"E", bv:2717, w:"2 LPL + 6 MPL + ATM-6"},
-        {c:"F", bv:2958, w:"HAG-20 + HAG-30 + ECM"}]},
-  {n:"Timber Wolf", isn:"Mad Cat", c:"Heavy", t:75, q:4, role:"Workhorse", note:"You own four. Prime/A are 1-v-1 terrors but pricey; the B (Gauss + Artemis LRM) is the budget Mad Cat that fits a 6,000 Star.",
-   cfg:[{c:"Prime", bv:2737, w:"2 LRM-20 + 2 ER large + 2 ER medium + MPL"},
-        {c:"A", bv:2854, w:"2 ER PPC + 3 MPL + Streak SRM-6"},
-        {c:"B", bv:2224, w:"Gauss + LRM-10 + pulse + SRM-4 Artemis", tag:"cheap"},
-        {c:"C", bv:2500, w:"2 ER large + UAC/5 + 2 LRM-15"},
-        {c:"D", bv:2682, w:"2 ER PPC + 4 Streak SRM-6 (2 rear)"},
-        {c:"S", bv:2462, w:"5 jump jets (urban Prime)"}]},
-
-  // ---------- ASSAULTS ----------
-  {n:"Gargoyle", isn:"Man O' War", c:"Assault", t:80, q:2, role:"Skirmisher", note:"Your best-kept secret: an 80-ton assault for 1,537. You own two, and 'under-gunned' here means 'cheap and durable'.",
-   cfg:[{c:"Prime", bv:1537, w:"2 LB 5-X + 2 SRM-6 + ER small", tag:"cheap"},
-        {c:"B", bv:1843, w:"mixed", tag:"cheap"},
-        {c:"G", bv:2156, w:"mixed"},
-        {c:"M", bv:2182, w:"mixed"},
-        {c:"H", bv:2183, w:"mixed"},
-        {c:"E", bv:2257, w:"mixed"},
-        {c:"C", bv:2437, w:"mixed"},
-        {c:"D", bv:2499, w:"mixed"},
-        {c:"A", bv:2689, w:"mixed (priciest)"}]},
-  {n:"Warhawk", isn:"Masakari", c:"Assault", t:85, q:1, role:"Fire support", note:"Prime's four ER PPCs generate 60 heat and sink 40 — too much gun. Alt configs run ~2,320–2,940.",
-   cfg:[{c:"Prime", bv:3194, w:"4 ER PPC + LRM-10 + TC", tag:"trap"},
-        {c:"C", bv:2998, w:"2 ER PPC + LRM-10/20 + UAC/2"},
-        {c:"B", bv:2320, w:"Gauss + lasers + SRM", tag:"cheap"},
-        {c:"E", bv:2895, w:"LBX/20 + heavy lasers (brawler)"}]},
-  {n:"Executioner", isn:"Gladiator", c:"Assault", t:95, q:1, role:"Fast sniper", note:"95 tons with MASC + jump, but small pod space and MASC tax make every config dear.",
-   cfg:[{c:"Prime", bv:2749, w:"Gauss + 2 ER large + 2 MG"},
-        {c:"A", bv:3112, w:"3 large pulse + 4 ER medium"},
-        {c:"B", bv:2940, w:"UAC-20 + ER PPC + ER medium"},
-        {c:"J", bv:2891, w:"HAG-40 + 3 SRM-6", tag:"late"}]}
+ {
+  "n": "Fire Moth",
+  "isn": "Dasher",
+  "c": "Light",
+  "t": 20,
+  "q": 1,
+  "role": "Harasser",
+  "note": "Fastest 'Mech in the game (10/15, MASC to 20). Extreme speed inflates its BV; lightly armed.",
+  "cfg": [
+   {
+    "c": "A",
+    "bv": 639,
+    "w": "Anti-Missile System + TAG + Streak SRM-4",
+    "tag": ""
+   },
+   {
+    "c": "C",
+    "bv": 741,
+    "w": "2 LRM-5 + Anti-Missile System",
+    "tag": ""
+   },
+   {
+    "c": "H",
+    "bv": 779,
+    "w": "9 Heavy Small Laser",
+    "tag": ""
+   },
+   {
+    "c": "E",
+    "bv": 822,
+    "w": "ATM-6",
+    "tag": ""
+   },
+   {
+    "c": "P",
+    "bv": 841,
+    "w": "12 Micro Pulse Laser",
+    "tag": "late"
+   },
+   {
+    "c": "K",
+    "bv": 884,
+    "w": "2 Anti-BattleArmor Pods (B-Pods) + 2 Heavy Medium Laser + 6 Light MG + 2 Light MG Array",
+    "tag": "late"
+   },
+   {
+    "c": "B",
+    "bv": 1064,
+    "w": "2 Medium Pulse Laser + 2 MG",
+    "tag": ""
+   },
+   {
+    "c": "J",
+    "bv": 1140,
+    "w": "ER Small Pulse Laser + 2 ER Small Laser + Plasma Cannon",
+    "tag": "late"
+   },
+   {
+    "c": "R",
+    "bv": 1160,
+    "w": "M-Pod + 2 Improved Heavy Medium Laser + Medium Laser + ER Small Laser",
+    "tag": "late"
+   },
+   {
+    "c": "M",
+    "bv": 1200,
+    "w": "4 ER Small Laser + LRM-15",
+    "tag": "late"
+   },
+   {
+    "c": "Prime",
+    "bv": 1251,
+    "w": "LRM-5s + ER mediums (scout)"
+   },
+   {
+    "c": "I",
+    "bv": 1260,
+    "w": "ER Large Laser + Improved Heavy Small Laser + LRM-5",
+    "tag": "late"
+   },
+   {
+    "c": "T",
+    "bv": 1305,
+    "w": "2 Improved Heavy Medium Laser + SRM-6 + Streak SRM-4 (I-OS)",
+    "tag": "late"
+   },
+   {
+    "c": "F",
+    "bv": 1461,
+    "w": "3 ER Medium Laser + 3 AP Gauss Rifle",
+    "tag": "late"
+   },
+   {
+    "c": "G",
+    "bv": 2041,
+    "w": "4 Improved Heavy Medium Laser",
+    "tag": "late"
+   },
+   {
+    "c": "D",
+    "bv": 2307,
+    "w": "5 ER Medium Laser + Flamer",
+    "tag": ""
+   }
+  ]
+ },
+ {
+  "n": "Pouncer",
+  "isn": "",
+  "c": "Light",
+  "t": 30,
+  "q": 1,
+  "role": "Sniper / Skirmisher",
+  "note": "A jump-capable Adder. Prime suffers the same 2-PPC heat trap.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 2557,
+    "w": "2 ER PPC + targeting computer",
+    "tag": "trap"
+   },
+   {
+    "c": "A",
+    "bv": 2081,
+    "w": "2 LRM-15 + 4 ER medium (fire support)"
+   },
+   {
+    "c": "B",
+    "bv": 1836,
+    "w": "2 ER large + LRM-10 + 2 SRM-4"
+   },
+   {
+    "c": "C",
+    "bv": 1653,
+    "w": "UAC/10 + lasers",
+    "tag": "cheap"
+   },
+   {
+    "c": "D",
+    "bv": 2246,
+    "w": "6 ER medium + TC + 2 Streak SRM-6"
+   },
+   {
+    "c": "E",
+    "bv": 1632,
+    "w": "2 ATM-9",
+    "tag": "cheap"
+   },
+   {
+    "c": "F",
+    "bv": 1308,
+    "w": "anti-infantry (plasma/flamers)",
+    "tag": "late"
+   }
+  ]
+ },
+ {
+  "n": "Arctic Cheetah",
+  "isn": "Hankyu",
+  "c": "Light",
+  "t": 30,
+  "q": 1,
+  "role": "Scout / EWAR",
+  "note": "Fragile electronic-warfare light; jumpy.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 1334,
+    "w": "2 LRM-5 + 2 ER medium + probe/ECM/TAG"
+   },
+   {
+    "c": "A",
+    "bv": 1117,
+    "w": "small pulse + 2 Streak SRM-6"
+   },
+   {
+    "c": "B",
+    "bv": 1076,
+    "w": "LB 2-X + MPL + ER medium",
+    "tag": "cheap"
+   },
+   {
+    "c": "C",
+    "bv": 1840,
+    "w": "4 ER medium + 2 MPL (hunter-killer)"
+   },
+   {
+    "c": "D",
+    "bv": 1080,
+    "w": "2 LRM-10 (missile boat)",
+    "tag": "cheap"
+   },
+   {
+    "c": "H",
+    "bv": 1264,
+    "w": "ER large + heavy mediums"
+   }
+  ]
+ },
+ {
+  "n": "Adder",
+  "isn": "Puma",
+  "c": "Light",
+  "t": 35,
+  "q": 1,
+  "role": "Sniper / Fire support",
+  "note": "Prime's twin ER PPC + TC is the textbook BV trap; the A is a 35-ton 'Archer'.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 2083,
+    "w": "2 ER PPC + targeting computer",
+    "tag": "trap"
+   },
+   {
+    "c": "A",
+    "bv": 1437,
+    "w": "2 LRM-20 (cold, ranged)",
+    "tag": "cheap"
+   },
+   {
+    "c": "B",
+    "bv": 1422,
+    "w": "LB 5-X + large pulse + 2 ER medium",
+    "tag": "cheap"
+   },
+   {
+    "c": "C",
+    "bv": 1372,
+    "w": "2 LRM-15 + Narc"
+   },
+   {
+    "c": "D",
+    "bv": 1255,
+    "w": "mixed (cheapest)",
+    "tag": "cheap"
+   },
+   {
+    "c": "E",
+    "bv": 1272,
+    "w": "mixed"
+   },
+   {
+    "c": "H",
+    "bv": 1453,
+    "w": "mixed"
+   }
+  ]
+ },
+ {
+  "n": "Viper",
+  "isn": "Dragonfly",
+  "c": "Medium",
+  "t": 40,
+  "q": 1,
+  "role": "Striker",
+  "note": "Fast (8/12/8), well-armored, deliberately under-gunned — keeps BV sane.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 1450,
+    "w": "SRM-4 + AMS + 2 MPL + 2 MG"
+   },
+   {
+    "c": "A",
+    "bv": 1989,
+    "w": "5 ER medium + SRM-6 Artemis"
+   },
+   {
+    "c": "B",
+    "bv": 1830,
+    "w": "ER PPC + 2 small pulse + flamer"
+   },
+   {
+    "c": "C",
+    "bv": 1344,
+    "w": "anti-infantry (MG/flamer)",
+    "tag": "cheap"
+   },
+   {
+    "c": "D",
+    "bv": 1779,
+    "w": "LRM-5 + 2 ER medium + Streak SRM-6"
+   },
+   {
+    "c": "E",
+    "bv": 1561,
+    "w": "ATM-6 + lasers"
+   },
+   {
+    "c": "H",
+    "bv": 1732,
+    "w": "heavy mediums + 2 ER medium"
+   }
+  ]
+ },
+ {
+  "n": "Battle Cobra",
+  "isn": "",
+  "c": "Medium",
+  "t": 40,
+  "q": 1,
+  "role": "Sniper",
+  "note": "Slow for a 40-tonner (5/8) but durable; simple pulse-laser platform.",
+  "cfg": [
+   {
+    "c": "BTL-C-2OC",
+    "bv": 726,
+    "w": "2 iNarc",
+    "tag": "late"
+   },
+   {
+    "c": "BTL-C-2OE",
+    "bv": 840,
+    "w": "2 MML-9",
+    "tag": "late"
+   },
+   {
+    "c": "BTL-C-2OB",
+    "bv": 895,
+    "w": "4 MRM-10",
+    "tag": "late"
+   },
+   {
+    "c": "BTL-C-2O",
+    "bv": 944,
+    "w": "2 Large Pulse Laser",
+    "tag": "late"
+   },
+   {
+    "c": "BTL-C-2OI",
+    "bv": 1019,
+    "w": "2 Medium Laser + 2 SRM-4 + iNarc + Laser AMS",
+    "tag": "late"
+   },
+   {
+    "c": "BTL-C-2OA",
+    "bv": 1113,
+    "w": "3 Medium Pulse Laser + Small Pulse Laser + 3 Medium Laser + TAG",
+    "tag": "late"
+   },
+   {
+    "c": "BTL-C-2OG",
+    "bv": 1217,
+    "w": "Plasma Rifle + 2 MG + Snub-Nose PPC",
+    "tag": "late"
+   },
+   {
+    "c": "BTL-C-2OD",
+    "bv": 1221,
+    "w": "4 Light PPC",
+    "tag": "late"
+   },
+   {
+    "c": "BTL-C-2OJ",
+    "bv": 1269,
+    "w": "Medium Re-engineered Laser + ER Medium Laser + 2 M-Pod + Large Re-engineered Laser",
+    "tag": "late"
+   },
+   {
+    "c": "J",
+    "bv": 1272,
+    "w": "2 ER Medium Pulse Laser + Rotary AC/2",
+    "tag": "late"
+   },
+   {
+    "c": "BTL-C-2OF",
+    "bv": 1300,
+    "w": "2 Plasma Rifle",
+    "tag": "late"
+   },
+   {
+    "c": "BTL-C-2OH",
+    "bv": 1305,
+    "w": "3 ER Medium Laser + Thunderbolt 15",
+    "tag": "late"
+   },
+   {
+    "c": "I",
+    "bv": 1385,
+    "w": "2 LRM-15",
+    "tag": "late"
+   },
+   {
+    "c": "A",
+    "bv": 1466,
+    "w": "3 medium + 3 medium pulse + SPL",
+    "tag": "cheap"
+   },
+   {
+    "c": "C",
+    "bv": 1484,
+    "w": "ATM-9 + 3 Medium Pulse Laser + Small Pulse Laser",
+    "tag": ""
+   },
+   {
+    "c": "Prime",
+    "bv": 1487,
+    "w": "2 large pulse lasers"
+   },
+   {
+    "c": "X",
+    "bv": 1492,
+    "w": "5 Improved Heavy Medium Laser",
+    "tag": "late"
+   },
+   {
+    "c": "F",
+    "bv": 1507,
+    "w": "3 ER Medium Laser + Ultra AC/5",
+    "tag": ""
+   },
+   {
+    "c": "H",
+    "bv": 1592,
+    "w": "2 ER Large Laser + 2 Heavy Medium Laser",
+    "tag": ""
+   },
+   {
+    "c": "G",
+    "bv": 1593,
+    "w": "2 ER Medium Laser + 2 Flamer + 2 Plasma Cannon",
+    "tag": "late"
+   },
+   {
+    "c": "T",
+    "bv": 1666,
+    "w": "2 ER Large Laser + 2 ER Small Laser",
+    "tag": "late"
+   },
+   {
+    "c": "B",
+    "bv": 1892,
+    "w": "heavier mixed loadout"
+   }
+  ]
+ },
+ {
+  "n": "Mongrel",
+  "isn": "Grendel",
+  "c": "Medium",
+  "t": 45,
+  "q": 1,
+  "role": "Striker",
+  "note": "Very fast (7/11/7); most configs are pricey for the weight.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 2290,
+    "w": "ER large + mixed short-range"
+   },
+   {
+    "c": "A",
+    "bv": 2031,
+    "w": "2 LRM-15 + MPL"
+   },
+   {
+    "c": "B",
+    "bv": 1903,
+    "w": "2 MPL + ER medium + UAC/5"
+   },
+   {
+    "c": "C",
+    "bv": 1465,
+    "w": "LB 10-X + lasers (cheapest)",
+    "tag": "cheap"
+   },
+   {
+    "c": "D",
+    "bv": 2212,
+    "w": "close-combat mixed"
+   },
+   {
+    "c": "H",
+    "bv": 1965,
+    "w": "heavy large laser + Streak SRM-4"
+   },
+   {
+    "c": "T",
+    "bv": 1936,
+    "w": "large pulse + heavy mediums + SRM-6"
+   }
+  ]
+ },
+ {
+  "n": "Ice Ferret",
+  "isn": "Fenris",
+  "c": "Medium",
+  "t": 45,
+  "q": 1,
+  "role": "Striker",
+  "note": "Fast cavalry striker; cheap across the board.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 1678,
+    "w": "ER large + ER medium"
+   },
+   {
+    "c": "A",
+    "bv": 1323,
+    "w": "mixed",
+    "tag": "cheap"
+   },
+   {
+    "c": "B",
+    "bv": 1461,
+    "w": "mixed"
+   },
+   {
+    "c": "C",
+    "bv": 1211,
+    "w": "mixed (cheapest)",
+    "tag": "cheap"
+   },
+   {
+    "c": "D",
+    "bv": 1653,
+    "w": "mixed"
+   },
+   {
+    "c": "E",
+    "bv": 1483,
+    "w": "ATM"
+   },
+   {
+    "c": "H",
+    "bv": 1619,
+    "w": "heavy lasers"
+   },
+   {
+    "c": "L",
+    "bv": 1380,
+    "w": "light striker"
+   }
+  ]
+ },
+ {
+  "n": "Nova",
+  "isn": "Black Hawk",
+  "c": "Medium",
+  "t": 50,
+  "q": 2,
+  "role": "Brawler",
+  "note": "Prime's 12 ER mediums cost as much as a Clan assault and can't be fired without shutdown. The B and D are the value picks.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 2663,
+    "w": "12 ER medium lasers (heat bomb)",
+    "tag": "trap"
+   },
+   {
+    "c": "A",
+    "bv": 2422,
+    "w": "2 ER PPC + 2 MPL + 2 AMS"
+   },
+   {
+    "c": "B",
+    "bv": 1543,
+    "w": "UAC/5 + large pulse",
+    "tag": "cheap"
+   },
+   {
+    "c": "D",
+    "bv": 1450,
+    "w": "LRM-20 + LB 5-X (fire support)",
+    "tag": "cheap"
+   },
+   {
+    "c": "S",
+    "bv": 2056,
+    "w": "6 medium pulse + 4 MG + probe"
+   },
+   {
+    "c": "F",
+    "bv": 1976,
+    "w": "HAG-20 + 3 ER medium"
+   },
+   {
+    "c": "G",
+    "bv": 1822,
+    "w": "ProtoMech AC/8 + heavy mediums"
+   },
+   {
+    "c": "H",
+    "bv": 1832,
+    "w": "10 heavy mediums (suicide heat)"
+   },
+   {
+    "c": "T",
+    "bv": 1579,
+    "w": "12 medium chemical lasers",
+    "tag": "cheap"
+   },
+   {
+    "c": "E",
+    "bv": 2078,
+    "w": "ATM-12 + 3 ER medium"
+   }
+  ]
+ },
+ {
+  "n": "Black Lanner",
+  "isn": "",
+  "c": "Medium",
+  "t": 55,
+  "q": 1,
+  "role": "Skirmisher",
+  "note": "Blazing 7/11 with MASC + ECM; speed-factor inflates BV hard.",
+  "cfg": [
+   {
+    "c": "X",
+    "bv": 1672,
+    "w": "2 Improved Heavy Medium Laser + Rotary AC/2",
+    "tag": "late"
+   },
+   {
+    "c": "I",
+    "bv": 1803,
+    "w": "2 ER Medium Laser + Medium VSP Laser + Streak SRM-4 + 3 Heavy MG",
+    "tag": "late"
+   },
+   {
+    "c": "D",
+    "bv": 1809,
+    "w": "2 Medium Pulse Laser + 2 ER Small Laser + 4 MG + 2 SRM-6 + Flamer",
+    "tag": ""
+   },
+   {
+    "c": "H",
+    "bv": 1928,
+    "w": "2 Medium Pulse Laser + Heavy Large Laser",
+    "tag": ""
+   },
+   {
+    "c": "G",
+    "bv": 1929,
+    "w": "4 LRM-5 + ER Large Pulse Laser",
+    "tag": "late"
+   },
+   {
+    "c": "B",
+    "bv": 1961,
+    "w": "2 LRM-20",
+    "tag": ""
+   },
+   {
+    "c": "J",
+    "bv": 2022,
+    "w": "3 ER Medium Laser + ProtoMech AC/8",
+    "tag": "late"
+   },
+   {
+    "c": "T",
+    "bv": 2040,
+    "w": "2 Improved Heavy Medium Laser + Plasma Cannon + LRM-10 + SRM-6",
+    "tag": "late"
+   },
+   {
+    "c": "F",
+    "bv": 2154,
+    "w": "6 Light MG + 2 Light MG Array + 5 Medium Pulse Laser",
+    "tag": "late"
+   },
+   {
+    "c": "Prime",
+    "bv": 2268,
+    "w": "ER large + 2 ER medium + LRM-10 + SRM-6 + ECM"
+   },
+   {
+    "c": "A",
+    "bv": 2308,
+    "w": "ER PPC + 2 MPL + probe + ECM + TAG"
+   },
+   {
+    "c": "E",
+    "bv": 2331,
+    "w": "ATM-12 + 3 ER Medium Laser",
+    "tag": ""
+   },
+   {
+    "c": "C",
+    "bv": 2523,
+    "w": "loadout n/a",
+    "tag": ""
+   }
+  ]
+ },
+ {
+  "n": "Mad Dog",
+  "isn": "Vulture",
+  "c": "Heavy",
+  "t": 60,
+  "q": 1,
+  "role": "Missile boat",
+  "note": "Your classic LRM anchor. The Prime is fine; A and C are leaner.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 2351,
+    "w": "2 LRM-20 + 4 ER medium"
+   },
+   {
+    "c": "A",
+    "bv": 1923,
+    "w": "leaner mixed",
+    "tag": "cheap"
+   },
+   {
+    "c": "B",
+    "bv": 2284,
+    "w": "mixed"
+   },
+   {
+    "c": "C",
+    "bv": 1892,
+    "w": "mixed (cheapest)",
+    "tag": "cheap"
+   },
+   {
+    "c": "D",
+    "bv": 2447,
+    "w": "heavier mixed"
+   },
+   {
+    "c": "E",
+    "bv": 2031,
+    "w": "Jihad-era refit",
+    "tag": "late"
+   },
+   {
+    "c": "F",
+    "bv": 2300,
+    "w": "mixed"
+   }
+  ]
+ },
+ {
+  "n": "Hellbringer",
+  "isn": "Loki",
+  "c": "Heavy",
+  "t": 65,
+  "q": 1,
+  "role": "Glass cannon",
+  "note": "Prime hauls a pile of switched-off electronics for ~2,650; the A drops them for real guns at far less.",
+  "cfg": [
+   {
+    "c": "B",
+    "bv": 1592,
+    "w": "Gauss + LB 5-X + 2 SRM-6 Artemis",
+    "tag": "cheap"
+   },
+   {
+    "c": "F",
+    "bv": 1839,
+    "w": "2 LB 10-X AC + 4 ER Medium Laser + SRM-6",
+    "tag": ""
+   },
+   {
+    "c": "A",
+    "bv": 1948,
+    "w": "2 ER large + UAC/5 + LRM-20 + Narc",
+    "tag": "cheap"
+   },
+   {
+    "c": "H",
+    "bv": 1952,
+    "w": "heavy lasers + UAC/5"
+   },
+   {
+    "c": "G",
+    "bv": 1956,
+    "w": "Improved Heavy Large Laser + 3 ER Small Laser + Improved Heavy Gauss Rifle",
+    "tag": "late"
+   },
+   {
+    "c": "C",
+    "bv": 2076,
+    "w": "ER Large Laser + 2 ER Small Laser + ATM-6 + 2 ER Medium Laser + LB 20-X AC",
+    "tag": ""
+   },
+   {
+    "c": "D",
+    "bv": 2140,
+    "w": "4 Anti-BattleArmor Pods (B-Pods) + 4 Plasma Cannon + 4 Medium Pulse Laser + Micro Pulse Laser",
+    "tag": "late"
+   },
+   {
+    "c": "M",
+    "bv": 2200,
+    "w": "2 ER Large Laser + Gauss Rifle + Streak SRM-6 + SRM-6",
+    "tag": ""
+   },
+   {
+    "c": "E",
+    "bv": 2304,
+    "w": "HAG/20 + 2 ER Large Laser + LRM-10",
+    "tag": "late"
+   },
+   {
+    "c": "J",
+    "bv": 2415,
+    "w": "jump-capable scout"
+   },
+   {
+    "c": "T",
+    "bv": 2444,
+    "w": "2 ER PPC + 3 ER Medium Laser + ATM-6 + 2 AP Gauss Rifle + Anti-Missile System",
+    "tag": "late"
+   },
+   {
+    "c": "Prime",
+    "bv": 2654,
+    "w": "2 ER PPC + TC + ECM + probe + AMS",
+    "tag": "trap"
+   }
+  ]
+ },
+ {
+  "n": "Linebacker",
+  "isn": "",
+  "c": "Heavy",
+  "t": 65,
+  "q": 1,
+  "role": "Skirmisher",
+  "note": "Fast 6/9 heavy. Prime is the pricey default; E/D are the budget chassis.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 2390,
+    "w": "fast mixed energy/missile"
+   },
+   {
+    "c": "A",
+    "bv": 2264,
+    "w": "2 ER large + LRM-5 + LRM-15 + 2 ER medium"
+   },
+   {
+    "c": "B",
+    "bv": 2048,
+    "w": "mixed"
+   },
+   {
+    "c": "C",
+    "bv": 2075,
+    "w": "UAC/5 + ER large"
+   },
+   {
+    "c": "D",
+    "bv": 2039,
+    "w": "mixed",
+    "tag": "cheap"
+   },
+   {
+    "c": "E",
+    "bv": 1846,
+    "w": "cheapest",
+    "tag": "cheap"
+   },
+   {
+    "c": "H",
+    "bv": 2097,
+    "w": "Civil-War refit",
+    "tag": "late"
+   }
+  ]
+ },
+ {
+  "n": "Night Gyr",
+  "isn": "",
+  "c": "Heavy",
+  "t": 75,
+  "q": 1,
+  "role": "Sniper",
+  "note": "Premium 75-ton heavy with 4 fixed jump jets — expensive across the board; 2-'Mech-Star material.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 2830,
+    "w": "2 ER PPC + UAC/10 + 3 MPL"
+   },
+   {
+    "c": "A",
+    "bv": 2680,
+    "w": "UAC-20 + 2 Streak SRM-6 + LPL + 3 MPL"
+   },
+   {
+    "c": "B",
+    "bv": 2140,
+    "w": "2 Gauss + 2 LB 2-X",
+    "tag": "cheap"
+   },
+   {
+    "c": "C",
+    "bv": 2468,
+    "w": "3 UAC/2 + 2 ER large + TC"
+   },
+   {
+    "c": "D",
+    "bv": 2889,
+    "w": "4 LRM-20 Artemis"
+   },
+   {
+    "c": "E",
+    "bv": 2717,
+    "w": "2 LPL + 6 MPL + ATM-6"
+   },
+   {
+    "c": "F",
+    "bv": 2958,
+    "w": "HAG-20 + HAG-30 + ECM"
+   }
+  ]
+ },
+ {
+  "n": "Timber Wolf",
+  "isn": "Mad Cat",
+  "c": "Heavy",
+  "t": 75,
+  "q": 4,
+  "role": "Workhorse",
+  "note": "You own four. Prime/A are 1-v-1 terrors but pricey; the B (Gauss + Artemis LRM) is the budget Mad Cat that fits a 6,000 Star.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 2737,
+    "w": "2 LRM-20 + 2 ER large + 2 ER medium + MPL"
+   },
+   {
+    "c": "A",
+    "bv": 2854,
+    "w": "2 ER PPC + 3 MPL + Streak SRM-6"
+   },
+   {
+    "c": "B",
+    "bv": 2224,
+    "w": "Gauss + LRM-10 + pulse + SRM-4 Artemis",
+    "tag": "cheap"
+   },
+   {
+    "c": "C",
+    "bv": 2500,
+    "w": "2 ER large + UAC/5 + 2 LRM-15"
+   },
+   {
+    "c": "D",
+    "bv": 2682,
+    "w": "2 ER PPC + 4 Streak SRM-6 (2 rear)"
+   },
+   {
+    "c": "S",
+    "bv": 2462,
+    "w": "5 jump jets (urban Prime)"
+   }
+  ]
+ },
+ {
+  "n": "Gargoyle",
+  "isn": "Man O' War",
+  "c": "Assault",
+  "t": 80,
+  "q": 2,
+  "role": "Skirmisher",
+  "note": "Your best-kept secret: an 80-ton assault for 1,537. You own two, and 'under-gunned' here means 'cheap and durable'.",
+  "cfg": [
+   {
+    "c": "Prime",
+    "bv": 1537,
+    "w": "2 LB 5-X + 2 SRM-6 + ER small",
+    "tag": "cheap"
+   },
+   {
+    "c": "B",
+    "bv": 1843,
+    "w": "mixed",
+    "tag": "cheap"
+   },
+   {
+    "c": "G",
+    "bv": 2156,
+    "w": "mixed"
+   },
+   {
+    "c": "M",
+    "bv": 2182,
+    "w": "mixed"
+   },
+   {
+    "c": "H",
+    "bv": 2183,
+    "w": "mixed"
+   },
+   {
+    "c": "E",
+    "bv": 2257,
+    "w": "mixed"
+   },
+   {
+    "c": "C",
+    "bv": 2437,
+    "w": "mixed"
+   },
+   {
+    "c": "D",
+    "bv": 2499,
+    "w": "mixed"
+   },
+   {
+    "c": "A",
+    "bv": 2689,
+    "w": "mixed (priciest)"
+   }
+  ]
+ },
+ {
+  "n": "Warhawk",
+  "isn": "Masakari",
+  "c": "Assault",
+  "t": 85,
+  "q": 1,
+  "role": "Fire support",
+  "note": "Prime's four ER PPCs generate 60 heat and sink 40 — too much gun. Alt configs run ~2,320–2,940.",
+  "cfg": [
+   {
+    "c": "B",
+    "bv": 2320,
+    "w": "Gauss + lasers + SRM",
+    "tag": "cheap"
+   },
+   {
+    "c": "A",
+    "bv": 2399,
+    "w": "2 ER Large Laser + Streak SRM-6 + LB 10-X AC + LRM-15",
+    "tag": ""
+   },
+   {
+    "c": "D",
+    "bv": 2474,
+    "w": "ATM-9 + Ultra AC/10 + 2 ER Large Laser + ER Small Laser",
+    "tag": ""
+   },
+   {
+    "c": "H",
+    "bv": 2601,
+    "w": "2 Heavy Large Laser + 2 Large Pulse Laser + LRM-10",
+    "tag": ""
+   },
+   {
+    "c": "F",
+    "bv": 2775,
+    "w": "2 ER PPC + LRM-20 + Ultra AC/2 + LRM-10",
+    "tag": ""
+   },
+   {
+    "c": "E",
+    "bv": 2895,
+    "w": "LBX/20 + heavy lasers (brawler)"
+   },
+   {
+    "c": "G",
+    "bv": 2909,
+    "w": "2 Improved Heavy Large Laser + Streak SRM-6 + LB 20-X AC",
+    "tag": "late"
+   },
+   {
+    "c": "T",
+    "bv": 2938,
+    "w": "2 ER PPC + 2 Plasma Rifle + Rocket Launcher 10",
+    "tag": "late"
+   },
+   {
+    "c": "C",
+    "bv": 2998,
+    "w": "2 ER PPC + LRM-10/20 + UAC/2"
+   },
+   {
+    "c": "I",
+    "bv": 3026,
+    "w": "2 ER PPC + 2 ER Large Laser + SRM-6 + LRM-5",
+    "tag": ""
+   },
+   {
+    "c": "Prime",
+    "bv": 3194,
+    "w": "4 ER PPC + LRM-10 + TC",
+    "tag": "trap"
+   },
+   {
+    "c": "L",
+    "bv": 3695,
+    "w": "2 ER PPC + 2 ER Flamer + ATM-12",
+    "tag": "late"
+   }
+  ]
+ },
+ {
+  "n": "Executioner",
+  "isn": "Gladiator",
+  "c": "Assault",
+  "t": 95,
+  "q": 1,
+  "role": "Fast sniper",
+  "note": "95 tons with MASC + jump, but small pod space and MASC tax make every config dear.",
+  "cfg": [
+   {
+    "c": "T",
+    "bv": 2558,
+    "w": "LB 10-X AC + 2 ER Large Pulse Laser + 2 MG",
+    "tag": "late"
+   },
+   {
+    "c": "D",
+    "bv": 2698,
+    "w": "2 SRM-6 + Large Pulse Laser + 3 Medium Pulse Laser + 5 Small Pulse Laser + ER Small Laser",
+    "tag": ""
+   },
+   {
+    "c": "C",
+    "bv": 2740,
+    "w": "LRM-20 + Ultra AC/20 + ER Small Laser",
+    "tag": ""
+   },
+   {
+    "c": "Prime",
+    "bv": 2749,
+    "w": "Gauss + 2 ER large + 2 MG"
+   },
+   {
+    "c": "J",
+    "bv": 2891,
+    "w": "HAG-40 + 3 SRM-6",
+    "tag": "late"
+   },
+   {
+    "c": "B",
+    "bv": 2940,
+    "w": "UAC-20 + ER PPC + ER medium"
+   },
+   {
+    "c": "E",
+    "bv": 2988,
+    "w": "2 ATM-9 + 2 ER Large Laser + 2 Heavy Medium Laser + Heavy Small Laser",
+    "tag": ""
+   },
+   {
+    "c": "P",
+    "bv": 3052,
+    "w": "Plasma Cannon + HAG/30 + 3 Heavy Medium Laser + LRM-10",
+    "tag": "late"
+   },
+   {
+    "c": "H",
+    "bv": 3059,
+    "w": "Ultra AC/20 + Heavy Large Laser + Flamer + 2 ER Medium Laser",
+    "tag": ""
+   },
+   {
+    "c": "A",
+    "bv": 3112,
+    "w": "3 large pulse + 4 ER medium"
+   },
+   {
+    "c": "K",
+    "bv": 3125,
+    "w": "HAG/20 + 2 ER Large Laser + 3 ER Medium Laser",
+    "tag": "late"
+   },
+   {
+    "c": "L",
+    "bv": 3132,
+    "w": "2 Streak LRM 15 + 2 ER Large Laser",
+    "tag": "late"
+   },
+   {
+    "c": "I",
+    "bv": 3339,
+    "w": "2 Streak SRM-6 + 2 Improved Heavy Large Laser",
+    "tag": "late"
+   },
+   {
+    "c": "TC",
+    "bv": 3363,
+    "w": "ER PPC + 3 ER Small Laser + 2 Large Pulse Laser",
+    "tag": ""
+   },
+   {
+    "c": "F",
+    "bv": 3606,
+    "w": "ER PPC + 2 Large Pulse Laser",
+    "tag": "late"
+   },
+   {
+    "c": "G",
+    "bv": 3825,
+    "w": "ER PPC + Streak LRM 15 + 6 ER Medium Laser",
+    "tag": "late"
+   }
+  ]
+ }
 ];
 
 const order = {Light:0,Medium:1,Heavy:2,Assault:3};
