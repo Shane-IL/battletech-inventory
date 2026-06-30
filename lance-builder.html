@@ -129,7 +129,7 @@
   <div class="result" id="result"></div>
 
   <div class="footer">
-    <p><b>How it works.</b> Default is a 4-&rsquo;Mech Inner Sphere lance; toggle <b>Clan</b> for a Star (defaults to 5), and pick <b>Force size</b> &mdash; arena duel (1), reduced (3), lance (4) or star (5). <b>Exclude experimental</b> (on by default) drops the Proliferation Cycle primitives. The builder draws only from &rsquo;Mechs you own, filters by faction / size / paint / intro-year, then fills toward the BV cap (200 random draws, keeps the fullest legal force). Hit <b>Build</b> to reroll. Set <b>Gunnery/Piloting</b> (default 4/5) and BVs are recomputed with the standard TechManual skill multiplier before fitting the cap &mdash; e.g. 3/4 = &times;1.32 (base BV shown in parens when skill &ne; 4/5). <b>Skill mix</b> presets (all-Veteran, one Elite, one Elite + two Vets, &hellip;) assign the better pilots to your highest-BV &rsquo;Mechs and fit the mixed-skill total under the cap; each row shows its skill. <b>Archetype</b> softly biases the draw toward a playstyle &mdash; Gunline (stand-off snipers/missiles), Brawler (close), Fast strike (light/fast), Assault wall (heavy) &mdash; by role + weight; reroll for variety. Canon BV 2.0 values. A few Clan-tech 'Mechs that came in IS packs (Curtain's Regent, the GDL Gargoyle, a Dragoons Timber Wolf) are tagged <span class="mx">IS/Clan</span> and can be drawn into either force. Paint status is read live from your inventory page (same browser).</p>
+    <p><b>How it works.</b> Default is a 4-&rsquo;Mech Inner Sphere lance; toggle <b>Clan</b> for a Star (defaults to 5), and pick <b>Force size</b> &mdash; arena duel (1), reduced (3), lance (4) or star (5). <b>Exclude experimental</b> (on by default) drops the Proliferation Cycle primitives. The builder draws only from &rsquo;Mechs you own, filters by faction / size / paint / intro-year, then fills toward the BV cap (200 random draws, keeps the fullest legal force). Hit <b>Build</b> to reroll. Set <b>Gunnery/Piloting</b> (default 4/5) and BVs are recomputed with the standard TechManual skill multiplier before fitting the cap &mdash; e.g. 3/4 = &times;1.32 (base BV shown in parens when skill &ne; 4/5). <b>Skill mix</b> presets (all-Veteran, one Elite, one Elite + two Vets, &hellip;) assign the better pilots to your highest-BV &rsquo;Mechs and fit the mixed-skill total under the cap; each row shows its skill. <b>Archetype</b> softly biases the draw toward a playstyle &mdash; Gunline (stand-off snipers/missiles), Brawler (close), Fast strike (light/fast), Assault wall (heavy) &mdash; by role + weight; reroll for variety. Canon BV 2.0 values. A few Clan-tech 'Mechs that came in IS packs (Curtain's Regent, the GDL Gargoyle, a Dragoons Timber Wolf) are tagged <span class="mx">IS/Clan</span>; they're kept in <b>Clan</b> rolls only &mdash; left out of the IS pool to avoid skewing it, so build those IS-with-a-Clan-'Mech lances by hand. Paint status is read live from your inventory page (same browser).</p>
   </div>
 </div>
 
@@ -204,10 +204,13 @@ function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.rand
 
 function eligible(){
   const pm = paintMap();
-  const fac = state.clan ? 'Clan' : 'IS';
-  return fleet.filter(function(m){ return (m.faction===fac || m.mixed) && m.year<=state.year
-    && (!state.painted || isPainted(m, pm))
-    && !(state.experimental && m.grp==='primitive'); });
+  return fleet.filter(function(m){
+    // IS force: native IS only (mixed Clan-tech excluded — build those by hand). Clan force: native Clan + mixed exceptions.
+    const inFac = state.clan ? (m.faction==='Clan' || m.mixed) : (m.faction==='IS' && !m.mixed);
+    return inFac && m.year<=state.year
+      && (!state.painted || isPainted(m, pm))
+      && !(state.experimental && m.grp==='primitive');
+  });
 }
 
 function build(){
