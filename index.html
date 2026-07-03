@@ -59,6 +59,7 @@
   .chip.f-is.active{background:var(--blue);} .chip.f-clan.active{background:var(--mauve);}
   .chip.c-Light.active{background:var(--teal);} .chip.c-Medium.active{background:var(--green);}
   .chip.c-Heavy.active{background:var(--yellow);} .chip.c-Assault.active{background:var(--peach);}
+  .chip.p-primed.active{background:var(--yellow);} .chip.p-painted.active{background:var(--green);}
 
   .viewtoggle{display:flex; gap:8px; margin-left:auto;}
 
@@ -202,6 +203,13 @@
         <button class="chip active" id="viewChassis" data-view="chassis">By chassis</button>
         <button class="chip" id="viewProduct" data-view="product">By product</button>
       </div>
+    </div>
+    <div class="filter-row" id="paintFilters">
+      <span class="grp-label">Paint status</span>
+      <button class="chip active" data-p="all">All</button>
+      <button class="chip p-unpainted" data-p="unpainted">Unpainted</button>
+      <button class="chip p-primed" data-p="primed">Primed</button>
+      <button class="chip p-painted" data-p="painted">Painted</button>
     </div>
     <div class="painttools">
       <div class="legend">
@@ -452,11 +460,15 @@ const paintDefaults = {
   "Wraith§TR1": [1]
 };
 
-let state = {q:"", f:"all", c:"all", view:"chassis", sort:null};
+let state = {q:"", f:"all", c:"all", paint:"all", view:"chassis", sort:null};
 
 function matches(m){
   if(state.f!=="all" && m.f!==state.f) return false;
   if(state.c!=="all" && m.c!==state.c) return false;
+  if(state.paint!=="all"){
+    const arr = paint[keyOf(m)] || [];
+    if(!arr.includes(PVAL[state.paint])) return false;
+  }
   if(state.q){
     const hay = (m.n+" "+(m.v||"")+" "+m.s.join(" ")).toLowerCase();
     if(!hay.includes(state.q.toLowerCase())) return false;
@@ -467,6 +479,7 @@ function matches(m){
 // ---- paint status ----
 const PAINT_KEY = 'bti-paint';
 const PNAME = {0:'Unpainted',1:'Primed',2:'Painted'};
+const PVAL = {unpainted:0, primed:1, painted:2};
 const keyOf = m => m.n + '§' + (m.v||'');
 const escAttr = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
 let paint = {};
@@ -642,6 +655,11 @@ document.querySelectorAll('#classFilters .chip[data-c]').forEach(b=>b.addEventLi
   document.querySelectorAll('#classFilters .chip[data-c]').forEach(x=>x.classList.remove('active'));
   b.classList.add('active'); if(state.view==='chassis') renderChassis();
 }));
+document.querySelectorAll('#paintFilters .chip').forEach(b=>b.addEventListener('click',()=>{
+  state.paint=b.dataset.p;
+  document.querySelectorAll('#paintFilters .chip').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); if(state.view==='chassis') renderChassis();
+}));
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{
   state.view=b.dataset.view;
   document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('active'));
@@ -663,11 +681,15 @@ document.getElementById('tbody').addEventListener('click', e=>{
   if(!paint[k]) return;
   paint[k][i] = (paint[k][i] + 1) % 3;
   savePaint();
-  const v = paint[k][i];
-  dot.className = 'pdot s' + v;
-  dot.title = PNAME[v] + ' — click to cycle';
-  const done = paint[k].filter(x=>x===2).length;
-  dot.closest('td.paint').querySelector('.pcount').textContent = done + '/' + paint[k].length;
+  if(state.paint!=='all'){
+    renderChassis(); // status change may drop this row out of the active paint filter
+  } else {
+    const v = paint[k][i];
+    dot.className = 'pdot s' + v;
+    dot.title = PNAME[v] + ' — click to cycle';
+    const done = paint[k].filter(x=>x===2).length;
+    dot.closest('td.paint').querySelector('.pcount').textContent = done + '/' + paint[k].length;
+  }
   updatePaintSummary();
 });
 document.getElementById('exportBtn').addEventListener('click', exportPaint);
